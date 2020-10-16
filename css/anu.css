@@ -1,0 +1,111 @@
+* {box-sizing: border-box;}
+body {font-family: Verdana, sans-serif;}
+.anumySlides {display: none;}
+img {vertical-align: middle;}
+
+/* Slideshow container */
+.anuslideshow-container {
+  max-width: 750px;
+  position: relative;
+  margin: auto;
+}
+
+/* Caption text */
+.anutext {
+  color: #f2f2f2;
+  font-size: 15px;
+  padding: 8px 12px;
+  position: absolute;
+  bottom: 8px;
+  width: 100%;
+  text-align: center;
+}
+
+
+/* The dots/bullets/indicators */
+.anudot {
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+
+.anuactive {
+  background-color: #717171;
+}
+
+/* Fading animation */
+.anufade {
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+
+@keyframes fade {
+  from {opacity: .4} 
+  to {opacity: 1}
+}
+
+/* On smaller screens, decrease text size */
+@media only screen and (max-width: 300px) {
+  .anutext {font-size: 11px}
+}
+.anuzoom {
+    padding: 2px;
+    background-color: 
+    transition:transform 2s;
+    width: 10px;
+    height: 10px;
+    margin: 0 auto;
+}
+
+ .anucontent:hover {
+				
+				
+				transform: scale(1.1, 1.1); 
+}
+
+
+/**{
+  box-sizing: border-box;
+}
+
+body {
+    background-color: #f1f1f1;
+    padding: 20px;
+    font-family: Arial;
+}*/
+
+/* Center website */
+/*.anumain {
+    max-width: 1000px;
+    margin: auto;
+}*/
+
+h6 {
+    font-size:15px;
+   
+}
+.anuimage{
+	width:180px;
+	height:150px;
+	padding:15px;
+}
+
+.anuimageanim{
+	width:800px;
+	height:500px;
+}
+
+/* Content */
+.anucontent {
+    background-color: white;
+    padding: 10px;
+}
+
+
+
+

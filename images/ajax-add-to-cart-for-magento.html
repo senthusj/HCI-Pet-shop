@@ -1,0 +1,1510 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!--required for bootstrap-responsive-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!-- required for adaptive images -->
+<!--script>document.cookie='resolution='+Math.max(screen.width,screen.height)+'; path=/';</script-->
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Ajax Add To Cart Extension for Magento</title>
+<meta name="description" content="Ajax Cart Magento Extension to add and remove products to the  shopping cart directly from the products lists and the product details pages without reloading the whole page. Visit our Extension page: Ajax Add to Cart for catalog." />
+<meta name="keywords" content="ajax cart, ajax add to cart, jquery, magento, ajax extensions" />
+<meta name="robots" content="INDEX,FOLLOW" />
+<link rel="icon" href="https://www.mangoextensions.com/skin/frontend/base/default/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="https://www.mangoextensions.com/skin/frontend/base/default/favicon.ico" type="image/x-icon" />
+<!--[if lt IE 7]>
+<script type="text/javascript">
+//<![CDATA[
+    var BLANK_URL = 'https://www.mangoextensions.com/js/blank.html';
+    var BLANK_IMG = 'https://www.mangoextensions.com/js/spacer.gif';
+//]]>
+</script>
+<![endif]-->
+
+<!-- USED TO INCLUDE GOOGLE FONTS FROM THE CONFIGURATION SECION -->
+<link href='//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700' rel='stylesheet' type='text/css'>
+
+<link rel="stylesheet" type="text/css" href="https://www.mangoextensions.com/media/css_secure/5d2507698148bb16848793dea369f77b.css" />
+<link rel="stylesheet" type="text/css" href="https://www.mangoextensions.com/media/css_secure/e72020dbf6fa6928eafb57c8701880b0.css" media="all" />
+<link rel="stylesheet" type="text/css" href="https://www.mangoextensions.com/media/css_secure/8911e63397e59d49a1322c91ee1ea5f0.css" media="print" />
+<script type="text/javascript" src="https://www.mangoextensions.com/media/js/ff77125b29177263f1b9567f888dafdc.js"></script>
+<link rel="canonical" href="https://www.mangoextensions.com/ajax-add-to-cart-for-magento.html" />
+<!--[if lt IE 8]>
+<link rel="stylesheet" type="text/css" href="https://www.mangoextensions.com/media/css_secure/79ed4ea0118a379d8808e95559a439db.css" media="all" />
+<![endif]-->
+<!--[if lt IE 7]>
+<script type="text/javascript" src="https://www.mangoextensions.com/media/js/2da2035d9e1a93a9b1569454255b5e60.js"></script>
+<![endif]-->
+
+<script type="text/javascript">
+//<![CDATA[
+Mage.Cookies.path     = '/';
+Mage.Cookies.domain   = '.www.mangoextensions.com';
+//]]>
+</script>
+<script>
+    //var ww = document.body.clientWidth;
+    var ww = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    var wl = 992; /*  width limit mobile-tablet vs desktop  BOOTSTRAP : @screen-md */
+    // initialise plugins
+    jQuery(document).ready(function() {
+        /* top menu */
+        jQuery("ul#categories-nav li a").each(function() {
+            if (jQuery(this).next().length > 0) {
+                jQuery(this).addClass("parent");
+            };
+        });
+        jQuery("#categories-menu-button").click(function(e) {
+            e.preventDefault();
+            jQuery(this).toggleClass("active");
+            jQuery("ul#categories-nav").toggle();
+        });
+        adjustEffects();
+        /* back to top link */
+        jQuery("a#top-link").click(function(e) {
+            e.preventDefault();
+            jQuery("html, body").animate({scrollTop: 0}, 400);
+        });
+    });
+    jQuery(window).bind('resize orientationchange', function() {
+        window.ww = document.body.clientWidth;
+        adjustEffects();
+    });
+    var adjustEffects = function() {
+        if (window.ww < window.wl) {
+            jQuery("#categories-menu-button").css("display", "block");
+            if (!jQuery("#categories-menu-button").hasClass("active")) {
+                jQuery("ul#categories-nav").hide();
+            } else {
+                jQuery("ul#categories-nav").show();
+            }
+            jQuery("ul#categories-nav li").unbind('mouseenter mouseleave');
+            jQuery("ul#categories-nav li a.parent").unbind('click').bind('click', function(e) {
+                // must be attached to anchor element to prevent bubbling
+                e.preventDefault();
+                jQuery(this).find("span.caret-container").toggleClass("dropup");
+                jQuery(this).parent("li").toggleClass("hover");
+            });
+            //productAccordion();
+            jQuery("#main-nav > ul, #main-nav > form").not("#close-top-menu").css("display", "none");
+        } else if (window.ww >= window.wl) {
+            jQuery("#categories-menu-button").css("display", "none");
+            jQuery("ul#categories-nav").show();
+            jQuery("ul#categories-nav li").removeClass("hover");
+            jQuery("ul#categories-nav li a").unbind('click');
+            jQuery("ul#categories-nav li").unbind('mouseenter mouseleave').bind('mouseenter mouseleave', function() {
+                // must be attached to li so that mouseleave is not triggered when hover over submenu
+                jQuery(this).toggleClass('hover');
+            });
+            //productTabs();
+            jQuery("#main-nav > ul, #main-nav > form").not("#close-top-menu").css("display", "block");
+        }
+    };
+
+
+
+    /* AJAX ADD TO WISHLIST AND COMPARE  */
+
+    var _CUSTOMER_LOGGED_IN = "";
+    var _CATALOG_LAZYLOAD_ENABLED = 0;
+    var _CLEAR_COMPARISON_LIST_MSG = "Are you sure you would like to remove all products from your comparison?";
+    var _REMOVE_COMPARISON_LIST_MSG = "Are you sure you would like to remove this item from the compare products?";
+    jQuery(function() {
+        window.themeScriptsOnLoad();
+    });
+    function themeScriptsOnLoad() {
+        /* jquery lazyload script  
+         * include only if enabled in backend
+         */
+        if (window._CATALOG_LAZYLOAD_ENABLED) {
+            jQuery(".col-main .category-products a.product-image > img.catalog-product-image").lazyload();
+        }
+        jQuery(".add-to-links > a.link-compare, .add-to-links > a.link-wishlist").tooltip({
+            placement: 'top'
+        });
+        /* main column height on catalog pages...  */
+        if (!jQuery("#layered-navigation-toggle-button").is(":visible")) {/* not to trigger for small screen */
+            jQuery(".col-main").css("min-height", (jQuery("#layered-navigation-container").outerHeight() + 1));
+        }
+        /* attribute swatches script */
+        jQuery("ul.attribute-swatches.product-list li a").tooltip({
+            placement: 'top'
+        });
+    }
+</script>
+<script type="text/javascript">
+//<![CDATA[
+optionalZipCountries = [];
+//]]>
+</script>
+<script type="text/javascript">//<![CDATA[
+        var Translator = new Translate([]);
+        //]]></script><!--Start of Zopim Live Chat Script-->
+<script type="text/javascript">
+window.$zopim||(function(d,s){var z=$zopim=function(c){z._.push(c)},$=z.s=
+d.createElement(s),e=d.getElementsByTagName(s)[0];z.set=function(o){z.set.
+_.push(o)};z._=[];z.set._=[];$.async=!0;$.setAttribute('charset','utf-8');
+$.src='//v2.zopim.com/?2kZWLImBoGRb7DgHdfp46ADwdHkpNVgw';z.t=+new Date;$.
+type='text/javascript';e.parentNode.insertBefore($,e)})(document,'script');
+</script>
+<!--End of Zopim Live Chat Script-->
+
+<!-- THEME SETTINGS -->
+<script type="text/javascript">
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2163041-15']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+</script>    </head>
+    <body class=" catalog-product-view catalog-product-view product-ajax-add-to-cart-for-magento">
+                    <div class="page-row-container container">
+        <div class="row">
+        <nav class="navbar navbar-default navbar-static-top  col-xs-12 "  role="navigation" id="main-navbar">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                        <div class="navbar-header">
+                <button id="button-toggle-navigation-responsive" type="button" class="navbar-toggle" data-toggle="collapse" data-target="#header-navbar-navigation">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span style="" class="glyphicon-lg show-lines"></span>
+                </button>
+                <button id="button-toggle-cart-responsive" type="button" class="navbar-toggle" data-toggle="collapse" data-target="#header-navbar-cart">
+                    <span class="sr-only">Shopping Cart</span>
+                    <span class="glyphicon glyphicon-shopping-cart"></span>
+                    <span id="button-toggle-cart-responsive-qty"></span>
+                </button>
+                                                                    <button id="button-toggle-currency-responsive" type="button" class="navbar-toggle" data-toggle="collapse" data-target="#header-navbar-currency">
+                        Currency                    </button>
+                                                <p class="navbar-text hidden-xs hidden-sm hidden-md"> </p>
+                            </div>
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse navbar-right" id="header-navbar-navigation">
+                <ul class="nav navbar-nav">
+                                            <li class="first" ><a href="https://www.mangoextensions.com/customer/account/" title="My Account" >My Account</a></li>
+                                                                <li class=" last" ><a href="https://www.mangoextensions.com/customer/account/login/" title="Log In" >Log In</a></li>
+                            </ul>
+            </div>
+            <div class="collapse navbar-collapse navbar-right" id="header-navbar-cart">        
+                <!-- TOP CART BLOCK WITH DROPDOWN -->
+                <div id="top-cart-block-container">
+    <!-- RESPONSIVE VERSION OF THE DROPDOWN CART BLOCK -->
+    <!-- DEFAULT VERSION OF THE DROPDOWN CART BLOCK -->
+    <ul class="nav visible-xs visible-sm">
+        <li class="dropdown" id="dropdown-cart-responsive">
+                        <div class="block block-cart panel " id="top-cart-block-responsive">
+                <!--div class="block-title">
+                    <strong><span></span></strong>
+                </div-->
+                <h3>My Cart</h3>
+                <div class="block-content">
+                                    </div>
+                                                    <div class="block-content">
+                        <p class="empty">You have no items in your shopping cart.</p>
+                    </div>
+                                            </div>
+        </li>
+    </ul>
+    
+    <!-- DEFAULT VERSION OF THE DROPDOWN CART BLOCK -->
+    <ul class="nav navbar-nav hidden-xs hidden-sm">
+        <li class="dropdown" id="dropdown-cart">
+            <a id="top-cart-label" role="button" href="#" class="dropdown-toggle"  data-target="#dropdown-cart" data-toggle="dropdown"><span class="glyphicon glyphicon-shopping-cart small"></span>&nbsp;Shopping Cart<b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu"  aria-labelledby="top-cart-label">
+                <li id="top-cart-container">
+                                        <div class="block block-cart panel " id="top-cart-block">
+                        <h3>My Cart</h3>
+                        <!--div class="block-title">
+                            <strong><span></span></strong>
+                        </div-->
+                        <div class="block-content">
+                                                    </div>
+                                                                            <div class="block-content">
+                                <p class="empty">You have no items in your shopping cart.</p>
+                            </div>
+                                                                    </div>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>            </div>
+                                        <div class="collapse navbar-collapse navbar-right" id="header-navbar-currency">
+                       
+    <script>
+        jQuery(document).ready(function() {
+            jQuery("#button-toggle-currency-responsive").hide();
+        });
+    </script>
+
+                </div>
+                            </nav>
+            </div>
+    </div>
+
+    <div class="page-row-container container">
+        <div class="header-container">
+                    <div class="header">
+                <a id="logo-image" href="https://www.mangoextensions.com/" title="Mango Extensions" class="logo"><strong>Mango Extensions</strong><img src="https://www.mangoextensions.com/media/headerlogo/logo.gif" alt="Mango Extensions" /></a>
+                            </div>
+                        </div>
+            </div>
+    
+    <div class="page-row-container container">
+        <div class="row">
+        <div class="nav-container">
+                <a id='categories-menu-button' href="#categories-nav">Site Navigation&nbsp;<span class="glyphicon glyphicon-chevron-down"></span><span class="glyphicon glyphicon-chevron-up"></span></a>	
+        <nav>
+            <ul id="categories-nav" class="">
+                                        <li class="level0 nav-0 first level-top"><a href="https://www.mangoextensions.com/" class="level-top"><span>Home</span></a>
+                                                    </li>    
+                                                <li class="level0 nav-0 first level-top"><a href="https://www.mangoextensions.com/about.html/" class="level-top"><span>About</span></a>
+                                                    </li>    
+                                                <li class="level0 nav-0 first level-top"><a href="https://www.mangoextensions.com/services.html/" class="level-top"><span>Services</span></a>
+                                                    </li>    
+                                        <li  class="level0 nav-1 first last category-menu-item-3 level-top parent"><a href="https://www.mangoextensions.com/magento-extensions.html"  class="level-top" ><span>Magento® Extensions</span><span class="btn btn-link btn-xs pull-right caret-container"><span class="caret "></span></span></a><ul class="level0"><li class="hidden-lg hidden-md level1 nav-1-0"><a href="https://www.mangoextensions.com/magento-extensions.html" ><span>View All Magento® Extensions</span></a></li><li  class="level1 nav-1-1 first category-menu-item-4 "><a href="https://www.mangoextensions.com/magento-extensions/catalog-enhancement.html" ><span>Catalog Enhancement</span></a></li><li  class="level1 nav-1-2 category-menu-item-40 "><a href="https://www.mangoextensions.com/magento-extensions/layered-navigation.html" ><span>Layered Navigation</span></a></li><li  class="level1 nav-1-3 category-menu-item-5 "><a href="https://www.mangoextensions.com/magento-extensions/color-swatches.html" ><span>Color Swatches for Magento</span></a></li><li  class="level1 nav-1-4 category-menu-item-6 "><a href="https://www.mangoextensions.com/magento-extensions/slideshows.html" ><span>Slideshow &amp; QuickView</span></a></li><li  class="level1 nav-1-5 category-menu-item-7 "><a href="https://www.mangoextensions.com/magento-extensions/checkout-minimum-order-fee.html" ><span>Minimum Order Fee</span></a></li><li  class="level1 nav-1-6 last category-menu-item-39 "><a href="https://www.mangoextensions.com/magento-extensions/magento-2-extensions.html" ><span>Magento 2 Extensions</span></a></li></ul></li>                                        <li class="level0 nav-0 first level-top"><a href="http://www.mangotemplates.com" class="level-top"><span>Magento® Themes</span></a>
+                                                    </li>    
+                                                <li class="level0 nav-0 first level-top"><a href="https://www.mangoextensions.com/contacts/" class="level-top"><span>Contact</span></a>
+                                                    </li>    
+                                    </ul>
+        </nav>
+            </div>
+                </div>
+    </div>
+            
+                <div class="wrapper">
+                <noscript>
+        <div class="global-site-notice noscript">
+            <div class="notice-inner">
+                <p>
+                    <strong>JavaScript seems to be disabled in your browser.</strong><br />
+                    You must have JavaScript enabled in your browser to utilize the functionality of this website.                </p>
+            </div>
+        </div>
+    </noscript>
+                        <div class="page container">
+                <div class="main-container col2-right-layout">
+                    <div class="main">
+                        
+
+<div class="breadcrumbs">
+    <ul>
+                    <li class="home">
+                            <a href="https://www.mangoextensions.com/" title="Go to Home Page">Home</a>
+                                        <span>/ </span>
+                        </li>
+                    <li class="product">
+                            <strong>Ajax Add To Cart</strong>
+                                    </li>
+            </ul>
+</div>
+                        <div class="col-main">
+                                                        <script type="text/javascript">
+    var optionsPrice = new Product.OptionsPrice({"priceFormat":{"pattern":"\u20ac%s","precision":2,"requiredPrecision":2,"decimalSymbol":".","groupSymbol":",","groupLength":3,"integerRequired":1},"includeTax":"false","showIncludeTax":false,"showBothPrices":false,"idSuffix":"_clone","oldPlusDisposition":0,"plusDisposition":0,"plusDispositionTax":0,"oldMinusDisposition":0,"minusDisposition":0,"productId":"14","productPrice":39,"productOldPrice":39,"priceInclTax":39,"priceExclTax":39,"skipCalculate":1,"defaultTax":20,"currentTax":0,"tierPrices":[],"tierPricesInclTax":[],"swatchPrices":null});
+</script>
+<div id="messages_product_view"></div>
+<div class="product-view"  itemscope itemtype="http://schema.org/Product">
+    <div class="product-essential">
+        <form action="https://www.mangoextensions.com/checkout/cart/add/uenc/aHR0cHM6Ly93d3cubWFuZ29leHRlbnNpb25zLmNvbS9hamF4LWFkZC10by1jYXJ0LWZvci1tYWdlbnRvLmh0bWw,/product/14/form_key/e674FRCSimO5VQcn/" method="post" id="product_addtocart_form" enctype="multipart/form-data">
+            <input name="form_key" type="hidden" value="e674FRCSimO5VQcn" />
+            <div class="no-display">
+                <input type="hidden" name="product" value="14" />
+                <input type="hidden" name="related_product" id="related-products-field" value="" />
+            </div>
+            <div class="product-shop col-xs-12 col-md-9">
+                <div class="product-name">
+                    <h1 itemprop="name">Ajax Add To Cart</h1>
+                </div>
+                                    <div class="ratings"  itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+                    <div class="rating-box">
+                <div class="rating" style="width:100%"  itemprop="ratingValue">5</div>
+            </div>
+                <p class="rating-links">
+            <a href="https://www.mangoextensions.com/ajax-add-to-cart-for-magento.html#reviewslist"><span itemprop="reviewCount">10</span> Review(s)</a>
+            <span class="separator">|</span>
+            <a href="https://www.mangoextensions.com/review/product/list/id/14/#review-form">Add Your Review</a>
+        </p>
+    </div>
+                
+
+
+                
+    <div class="price-box">
+                                                            <span class="regular-price" id="product-price-14">
+                                            <span class="price">€39.00</span>                                    </span>
+                        
+        </div>
+
+                    <div class="sr-only" >
+                    Product Price: <span itemprop="offers" itemscope itemtype="http://schema.org/Offer"> 
+                        <meta itemprop="priceCurrency" content="EUR" />eur<span itemprop="price">39.00</span>    
+                    </span>
+                    </div>
+                    
+            </div>
+            <div class="product-img-box col-xs-12 col-md-3">
+                    <div style="position:relative;">
+        <a id="main-image-link" data-fancybox-group="product-gallery" class="product-image thumbnail fancybox cloud-zoom" rel=""  href="https://www.mangoextensions.com/media/catalog/product/cache/1/image/1200x1200/9df78eab33525d08d6e5fb8d27136e95/a/j/ajaxaddtocartsite.jpg">
+            <img id="image" src="https://www.mangoextensions.com/media/catalog/product/cache/1/image/300x300/9df78eab33525d08d6e5fb8d27136e95/a/j/ajaxaddtocartsite.jpg" alt="Ajax Add To Cart" title="Ajax Add To Cart" />        </a>
+            </div>    
+    <div class="more-views">
+        <h2>Views</h2>
+        <div class="product-thumbnails-container">
+                            <div class="col-xs-3 col-sm-6 product-thumbnail-container">
+                    <a class="thumbnail fancybox product-gallery-image" data-fancybox-group="product-gallery"  href="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/300x300/9df78eab33525d08d6e5fb8d27136e95/a/j/ajaxaddtocart_settings.png" data-fancybox-href="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/1200x1200/9df78eab33525d08d6e5fb8d27136e95/a/j/ajaxaddtocart_settings.png" title="">
+                        <img src="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/200x200/9df78eab33525d08d6e5fb8d27136e95/a/j/ajaxaddtocart_settings.png" alt=""  width="200" height="200"/>
+                    </a>
+                </div>
+                            <div class="col-xs-3 col-sm-6 product-thumbnail-container">
+                    <a class="thumbnail fancybox product-gallery-image" data-fancybox-group="product-gallery"  href="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/300x300/9df78eab33525d08d6e5fb8d27136e95/a/j/ajax-add-to-cart-1.png" data-fancybox-href="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/1200x1200/9df78eab33525d08d6e5fb8d27136e95/a/j/ajax-add-to-cart-1.png" title="">
+                        <img src="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/200x200/9df78eab33525d08d6e5fb8d27136e95/a/j/ajax-add-to-cart-1.png" alt=""  width="200" height="200"/>
+                    </a>
+                </div>
+                            <div class="col-xs-3 col-sm-6 product-thumbnail-container">
+                    <a class="thumbnail fancybox product-gallery-image" data-fancybox-group="product-gallery"  href="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/300x300/9df78eab33525d08d6e5fb8d27136e95/a/j/ajax-add-to-cart-configurable.png" data-fancybox-href="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/1200x1200/9df78eab33525d08d6e5fb8d27136e95/a/j/ajax-add-to-cart-configurable.png" title="">
+                        <img src="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/200x200/9df78eab33525d08d6e5fb8d27136e95/a/j/ajax-add-to-cart-configurable.png" alt=""  width="200" height="200"/>
+                    </a>
+                </div>
+                            <div class="col-xs-3 col-sm-6 product-thumbnail-container">
+                    <a class="thumbnail fancybox product-gallery-image" data-fancybox-group="product-gallery"  href="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/300x300/9df78eab33525d08d6e5fb8d27136e95/c/o/confirmation_1.png" data-fancybox-href="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/1200x1200/9df78eab33525d08d6e5fb8d27136e95/c/o/confirmation_1.png" title="Ajax Add To Cart - Confirmation ">
+                        <img src="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/200x200/9df78eab33525d08d6e5fb8d27136e95/c/o/confirmation_1.png" alt="Ajax Add To Cart - Confirmation "  width="200" height="200"/>
+                    </a>
+                </div>
+                            <div class="col-xs-3 col-sm-6 product-thumbnail-container">
+                    <a class="thumbnail fancybox product-gallery-image" data-fancybox-group="product-gallery"  href="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/300x300/9df78eab33525d08d6e5fb8d27136e95/c/o/confirmation_2.png" data-fancybox-href="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/1200x1200/9df78eab33525d08d6e5fb8d27136e95/c/o/confirmation_2.png" title="Ajax Add To Cart - Confirmation ">
+                        <img src="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/200x200/9df78eab33525d08d6e5fb8d27136e95/c/o/confirmation_2.png" alt="Ajax Add To Cart - Confirmation "  width="200" height="200"/>
+                    </a>
+                </div>
+                            <div class="col-xs-3 col-sm-6 product-thumbnail-container">
+                    <a class="thumbnail fancybox product-gallery-image" data-fancybox-group="product-gallery"  href="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/300x300/9df78eab33525d08d6e5fb8d27136e95/a/j/ajax-cart-cross-sells.png" data-fancybox-href="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/1200x1200/9df78eab33525d08d6e5fb8d27136e95/a/j/ajax-cart-cross-sells.png" title="Ajax Add To Cart  - Confirmation with cross-sells">
+                        <img src="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/200x200/9df78eab33525d08d6e5fb8d27136e95/a/j/ajax-cart-cross-sells.png" alt="Ajax Add To Cart  - Confirmation with cross-sells"  width="200" height="200"/>
+                    </a>
+                </div>
+                            <div class="col-xs-3 col-sm-6 product-thumbnail-container">
+                    <a class="thumbnail fancybox product-gallery-image" data-fancybox-group="product-gallery"  href="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/300x300/9df78eab33525d08d6e5fb8d27136e95/c/o/confirmation_with_countdown.png" data-fancybox-href="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/1200x1200/9df78eab33525d08d6e5fb8d27136e95/c/o/confirmation_with_countdown.png" title="Ajax Add To Cart - Confirmation with countdown">
+                        <img src="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/200x200/9df78eab33525d08d6e5fb8d27136e95/c/o/confirmation_with_countdown.png" alt="Ajax Add To Cart - Confirmation with countdown"  width="200" height="200"/>
+                    </a>
+                </div>
+                    </div>
+    </div>
+    <!-- Call quick start function. -->
+            <script type="text/javascript">
+            //<![CDATA[
+            jQuery(document).ready(function() {
+                /* products gallery lightbox */
+                jQuery(".product-image, .product-gallery-image").fancybox({
+                    openEffect: 'none',
+                    closeEffect: 'none',
+                    nextEffect: 'fade',
+                    mouseWheel: 'true',
+                    preload: 1, /* to save some bandwidth */
+                    arrows: 'true',
+                    prevEffect: 'fade',
+                    helpers: {
+                        title: {
+                            position: 'top'
+                        }
+                    }
+                });
+            });
+        </script> 
+                </div>
+            <div class="product-shop col-xs-12 col-md-9">
+                                
+                
+                                                                <div class="box-collateral box-description">
+    <h2>Overview</h2>
+    <div class="std" itemprop="description">
+        <p>Add and remove products to the  shopping cart directly from the products listing and the product details pages without reloading the whole page. Enhance your customer experience and  increase your store conversion rate with this Ajax Cart Extension</p>
+<ul class="disc">
+<li>Uses jQuery and jQuery UI functions</li>
+<li>Customizable theme, apply any of the themes from the jQuery UI theme page ( <a href="http://jqueryui.com/themeroller/" target="_blank">http://jqueryui.com/themeroller/</a>  ) to replace the default dialog box css</li>
+<li>Works with simple, configurable, grouped and downloadable products</li>
+<li>Displays last items added to cart on the dialog box</li>
+<li>Updates the sidebar cart box</li>
+<li>Updates the cart top link</li>
+<li>Displays product qty. form before adding to cart (optional in the backend)</li>
+<li>Works with related products (product details page) and cross-sells (shopping cart page) .</li>
+<li>Responsive version: set window width break point in extension settings.</li>
+<li>Compatible with all the other Mango Extensions: Ajax Pagination, Price Slider, Color Swatches</li>
+<li>Easy 10 minutes installation</li>
+</ul>
+
+<h2>Demo</h2>
+
+<div class="std">
+<p>Please visit the demo site for this extension:</p>
+<ul>
+<li><a href="http://ajaxaddtocart.mangoextensions.com/ajaxcart_rwd/">Magento RWD Theme</a></li>
+<li><a href="http://ajaxaddtocart.mangoextensions.com/ajaxcart_default/">Magento Default Theme</a></li>
+<li><a href="http://ajaxaddtocart.mangoextensions.com/ajax_cart_cross_sells/">Ajax Cart with Cross-sell products list</a></li>
+
+
+
+</ul>
+</div>
+    </div>
+</div>
+                
+                                <div class="std">
+                    <a class="btn btn-xs btn-link" href="https://www.mangoextensions.com/ajax-add-to-cart-magento-changelog.html"><span class="glyphicon glyphicon-calendar"></span>&nbsp;View extension changelog</a>
+                </div>
+                
+                
+                <div class="short-description">
+                                        <h2>Contact</h2>
+                    <div class="std">
+                        <p>If you have a question about this extension, please check our <a href="https://www.mangoextensions.com/faq.html">FAQ</a> page to make sure we haven't already answered it. Would you like to give us some feedback or request additional information? Please <a id="link-product-contact-form" href="https://www.mangoextensions.com/contacts/">contact us</a>.</p>
+                    </div>
+                    
+                </div>
+                                                                                </div>
+            <div class="clearer"></div>
+            	                    <div class="block-container2">
+                    <div class="product-options" id="product-options-wrapper">
+    <script type="text/javascript">
+//<![CDATA[
+var DateOption = Class.create({
+
+    getDaysInMonth: function(month, year)
+    {
+        var curDate = new Date();
+        if (!month) {
+            month = curDate.getMonth();
+        }
+        if (2 == month && !year) { // leap year assumption for unknown year
+            return 29;
+        }
+        if (!year) {
+            year = curDate.getFullYear();
+        }
+        return 32 - new Date(year, month - 1, 32).getDate();
+    },
+
+    reloadMonth: function(event)
+    {
+        var selectEl = event.findElement();
+        var idParts = selectEl.id.split("_");
+        if (idParts.length != 3) {
+            return false;
+        }
+        var optionIdPrefix = idParts[0] + "_" + idParts[1];
+        var month = parseInt($(optionIdPrefix + "_month").value);
+        var year = parseInt($(optionIdPrefix + "_year").value);
+        var dayEl = $(optionIdPrefix + "_day");
+
+        var days = this.getDaysInMonth(month, year);
+
+        //remove days
+        for (var i = dayEl.options.length - 1; i >= 0; i--) {
+            if (dayEl.options[i].value > days) {
+                dayEl.remove(dayEl.options[i].index);
+            }
+        }
+
+        // add days
+        var lastDay = parseInt(dayEl.options[dayEl.options.length-1].value);
+        for (i = lastDay + 1; i <= days; i++) {
+            this.addOption(dayEl, i, i);
+        }
+    },
+
+    addOption: function(select, text, value)
+    {
+        var option = document.createElement('OPTION');
+        option.value = value;
+        option.text = text;
+
+        if (select.options.add) {
+            select.options.add(option);
+        } else {
+            select.appendChild(option);
+        }
+    }
+});
+dateOption = new DateOption();
+//]]>
+</script>
+
+    <script type="text/javascript">
+    //<![CDATA[
+    var optionFileUpload = {
+        productForm : $('product_addtocart_form'),
+        formAction : '',
+        formElements : {},
+        upload : function(element){
+            this.formElements = this.productForm.select('input', 'select', 'textarea', 'button');
+            this.removeRequire(element.readAttribute('id').sub('option_', ''));
+
+            template = '<iframe id="upload_target" name="upload_target" style="width:0; height:0; border:0;"><\/iframe>';
+
+            Element.insert($('option_'+element.readAttribute('id').sub('option_', '')+'_uploaded_file'), {after: template});
+
+            this.formAction = this.productForm.action;
+
+            var baseUrl = 'https://www.mangoextensions.com/catalog/product/upload/';
+            var urlExt = 'option_id/'+element.readAttribute('id').sub('option_', '');
+
+            this.productForm.action = parseSidUrl(baseUrl, urlExt);
+            this.productForm.target = 'upload_target';
+            this.productForm.submit();
+            this.productForm.target = '';
+            this.productForm.action = this.formAction;
+        },
+        removeRequire : function(skipElementId){
+            for(var i=0; i<this.formElements.length; i++){
+                if (this.formElements[i].readAttribute('id') != 'option_'+skipElementId+'_file' && this.formElements[i].type != 'button') {
+                    this.formElements[i].disabled='disabled';
+                }
+            }
+        },
+        addRequire : function(skipElementId){
+            for(var i=0; i<this.formElements.length; i++){
+                if (this.formElements[i].readAttribute('name') != 'options_'+skipElementId+'_file' && this.formElements[i].type != 'button') {
+                    this.formElements[i].disabled='';
+                }
+            }
+        },
+        uploadCallback : function(data){
+            this.addRequire(data.optionId);
+            $('upload_target').remove();
+
+            if (data.error) {
+
+            } else {
+                $('option_'+data.optionId+'_uploaded_file').value = data.fileName;
+                $('option_'+data.optionId+'_file').value = '';
+                $('option_'+data.optionId+'_file').hide();
+                $('option_'+data.optionId+'').hide();
+                template = '<div id="option_'+data.optionId+'_file_box"><a href="#"><img src="var/options/'+data.fileName+'" alt=""><\/a><a href="#" onclick="optionFileUpload.removeFile('+data.optionId+')" title="Remove file" \/>Remove file<\/a>';
+
+                Element.insert($('option_'+data.optionId+'_uploaded_file'), {after: template});
+            }
+        },
+        removeFile : function(optionId)
+        {
+            $('option_'+optionId+'_uploaded_file').value= '';
+            $('option_'+optionId+'_file').show();
+            $('option_'+optionId+'').show();
+
+            $('option_'+optionId+'_file_box').remove();
+        }
+    }
+    var optionTextCounter = {
+        count : function(field,cntfield,maxlimit){
+            if (field.value.length > maxlimit){
+                field.value = field.value.substring(0, maxlimit);
+            } else {
+                cntfield.innerHTML = maxlimit - field.value.length;
+            }
+        }
+    }
+
+    Product.Options = Class.create();
+    Product.Options.prototype = {
+        initialize : function(config) {
+            this.config = config;
+            this.reloadPrice();
+            document.observe("dom:loaded", this.reloadPrice.bind(this));
+        },
+        reloadPrice : function() {
+            var config = this.config;
+            var skipIds = [];
+            $$('body .product-custom-option').each(function(element){
+                var optionId = 0;
+                element.name.sub(/[0-9]+/, function(match){
+                    optionId = parseInt(match[0], 10);
+                });
+                if (config[optionId]) {
+                    var configOptions = config[optionId];
+                    var curConfig = {price: 0};
+                    if (element.type == 'checkbox' || element.type == 'radio') {
+                        if (element.checked) {
+                            if (typeof configOptions[element.getValue()] != 'undefined') {
+                                curConfig = configOptions[element.getValue()];
+                            }
+                        }
+                    } else if(element.hasClassName('datetime-picker') && !skipIds.include(optionId)) {
+                        dateSelected = true;
+                        $$('.product-custom-option[id^="options_' + optionId + '"]').each(function(dt){
+                            if (dt.getValue() == '') {
+                                dateSelected = false;
+                            }
+                        });
+                        if (dateSelected) {
+                            curConfig = configOptions;
+                            skipIds[optionId] = optionId;
+                        }
+                    } else if(element.type == 'select-one' || element.type == 'select-multiple') {
+                        if ('options' in element) {
+                            $A(element.options).each(function(selectOption){
+                                if ('selected' in selectOption && selectOption.selected) {
+                                    if (typeof(configOptions[selectOption.value]) != 'undefined') {
+                                        curConfig = configOptions[selectOption.value];
+                                    }
+                                }
+                            });
+                        }
+                    } else {
+                        if (element.getValue().strip() != '') {
+                            curConfig = configOptions;
+                        }
+                    }
+                    if(element.type == 'select-multiple' && ('options' in element)) {
+                        $A(element.options).each(function(selectOption) {
+                            if (('selected' in selectOption) && typeof(configOptions[selectOption.value]) != 'undefined') {
+                                if (selectOption.selected) {
+                                    curConfig = configOptions[selectOption.value];
+                                } else {
+                                    curConfig = {price: 0};
+                                }
+                                optionsPrice.addCustomPrices(optionId + '-' + selectOption.value, curConfig);
+                                optionsPrice.reload();
+                            }
+                        });
+                    } else {
+                        optionsPrice.addCustomPrices(element.id || optionId, curConfig);
+                        optionsPrice.reload();
+                    }
+                }
+            });
+        }
+    }
+    function validateOptionsCallback(elmId, result) {
+        var container = $(elmId).up('ul.options-list');
+        if (result == 'failed') {
+            container.removeClassName('validation-passed');
+            container.addClassName('validation-failed');
+        } else {
+            container.removeClassName('validation-failed');
+            container.addClassName('validation-passed');
+        }
+    }
+    var opConfig = new Product.Options({"25":{"price":0,"oldPrice":0,"priceValue":"0.0000","type":"fixed","excludeTax":0,"includeTax":0},"24":{"33":{"price":0,"oldPrice":0,"priceValue":"0.0000","type":"fixed","excludeTax":0,"includeTax":0},"34":{"price":0,"oldPrice":0,"priceValue":"0.0000","type":"fixed","excludeTax":0,"includeTax":0},"71":{"price":0,"oldPrice":0,"priceValue":"0.0000","type":"fixed","excludeTax":0,"includeTax":0},"112":{"price":0,"oldPrice":0,"priceValue":"0.0000","type":"fixed","excludeTax":0,"includeTax":0},"134":{"price":0,"oldPrice":0,"priceValue":"0.0000","type":"fixed","excludeTax":0,"includeTax":0},"171":{"price":0,"oldPrice":0,"priceValue":"0.0000","type":"fixed","excludeTax":0,"includeTax":0},"50":{"price":40,"oldPrice":40,"priceValue":"40.0000","type":"fixed","excludeTax":40,"includeTax":40},"51":{"price":40,"oldPrice":40,"priceValue":"40.0000","type":"fixed","excludeTax":40,"includeTax":40},"92":{"price":40,"oldPrice":40,"priceValue":"40.0000","type":"fixed","excludeTax":40,"includeTax":40},"113":{"price":40,"oldPrice":40,"priceValue":"40.0000","type":"fixed","excludeTax":40,"includeTax":40},"135":{"price":40,"oldPrice":40,"priceValue":"40.0000","type":"fixed","excludeTax":40,"includeTax":40},"172":{"price":40,"oldPrice":40,"priceValue":"40.0000","type":"fixed","excludeTax":40,"includeTax":40}},"23":{"31":{"price":25,"oldPrice":25,"priceValue":"25.0000","type":"fixed","excludeTax":25,"includeTax":25}}});
+    //]]>
+    </script>
+    <dl>
+            <dt><label class="required"><em>*</em>Domain</label>
+    </dt>
+<dd>
+    <div class="input-box">
+            <input type="text" onchange="opConfig.reloadPrice()" id="options_25_text" class="input-text required-entry  product-custom-option" name="options[25]" value="" />
+            </div>
+</dd>
+            
+<dt><label class="required"><em>*</em>Magento Version</label></dt>
+<dd>
+    <div class="input-box">
+        <ul id="options-24-list" class="options-list"><li><input type="radio" class="radio  validate-one-required-by-name product-custom-option" onclick="opConfig.reloadPrice()" name="options[24]" id="options_24_2" value="33"  price="0" /><span class="label"><label for="options_24_2">Magento Community Edition 1.4.x.x </label></span><script type="text/javascript">$('options_24_2').advaiceContainer = 'options-24-container';$('options_24_2').callbackFunction = 'validateOptionsCallback';</script></li><li><input type="radio" class="radio  validate-one-required-by-name product-custom-option" onclick="opConfig.reloadPrice()" name="options[24]" id="options_24_3" value="34"  price="0" /><span class="label"><label for="options_24_3">Magento Community Edition 1.5.x.x </label></span><script type="text/javascript">$('options_24_3').advaiceContainer = 'options-24-container';$('options_24_3').callbackFunction = 'validateOptionsCallback';</script></li><li><input type="radio" class="radio  validate-one-required-by-name product-custom-option" onclick="opConfig.reloadPrice()" name="options[24]" id="options_24_4" value="71"  price="0" /><span class="label"><label for="options_24_4">Magento Community Edition 1.6.x </label></span><script type="text/javascript">$('options_24_4').advaiceContainer = 'options-24-container';$('options_24_4').callbackFunction = 'validateOptionsCallback';</script></li><li><input type="radio" class="radio  validate-one-required-by-name product-custom-option" onclick="opConfig.reloadPrice()" name="options[24]" id="options_24_5" value="112"  price="0" /><span class="label"><label for="options_24_5">Magento Community Edition 1.7.x </label></span><script type="text/javascript">$('options_24_5').advaiceContainer = 'options-24-container';$('options_24_5').callbackFunction = 'validateOptionsCallback';</script></li><li><input type="radio" class="radio  validate-one-required-by-name product-custom-option" onclick="opConfig.reloadPrice()" name="options[24]" id="options_24_6" value="134"  price="0" /><span class="label"><label for="options_24_6">Magento Community Edition 1.8.x </label></span><script type="text/javascript">$('options_24_6').advaiceContainer = 'options-24-container';$('options_24_6').callbackFunction = 'validateOptionsCallback';</script></li><li><input type="radio" class="radio  validate-one-required-by-name product-custom-option" onclick="opConfig.reloadPrice()" name="options[24]" id="options_24_7" value="171"  price="0" /><span class="label"><label for="options_24_7">Magento Community Edition 1.9.x </label></span><script type="text/javascript">$('options_24_7').advaiceContainer = 'options-24-container';$('options_24_7').callbackFunction = 'validateOptionsCallback';</script></li><li><input type="radio" class="radio  validate-one-required-by-name product-custom-option" onclick="opConfig.reloadPrice()" name="options[24]" id="options_24_8" value="50"  price="40" /><span class="label"><label for="options_24_8">Magento Professional - Enterprise Edition 1.9 .x <span class="price-notice">+<span class="price">€40.00</span></span></label></span><script type="text/javascript">$('options_24_8').advaiceContainer = 'options-24-container';$('options_24_8').callbackFunction = 'validateOptionsCallback';</script></li><li><input type="radio" class="radio  validate-one-required-by-name product-custom-option" onclick="opConfig.reloadPrice()" name="options[24]" id="options_24_9" value="51"  price="40" /><span class="label"><label for="options_24_9">Magento Professional - Enterprise Edition 1.10 .x <span class="price-notice">+<span class="price">€40.00</span></span></label></span><script type="text/javascript">$('options_24_9').advaiceContainer = 'options-24-container';$('options_24_9').callbackFunction = 'validateOptionsCallback';</script></li><li><input type="radio" class="radio  validate-one-required-by-name product-custom-option" onclick="opConfig.reloadPrice()" name="options[24]" id="options_24_10" value="92"  price="40" /><span class="label"><label for="options_24_10">Magento Professional - Enterprise Edition 1.11.x <span class="price-notice">+<span class="price">€40.00</span></span></label></span><script type="text/javascript">$('options_24_10').advaiceContainer = 'options-24-container';$('options_24_10').callbackFunction = 'validateOptionsCallback';</script></li><li><input type="radio" class="radio  validate-one-required-by-name product-custom-option" onclick="opConfig.reloadPrice()" name="options[24]" id="options_24_11" value="113"  price="40" /><span class="label"><label for="options_24_11">Magento Professional - Enterprise Edition 1.12.x <span class="price-notice">+<span class="price">€40.00</span></span></label></span><script type="text/javascript">$('options_24_11').advaiceContainer = 'options-24-container';$('options_24_11').callbackFunction = 'validateOptionsCallback';</script></li><li><input type="radio" class="radio  validate-one-required-by-name product-custom-option" onclick="opConfig.reloadPrice()" name="options[24]" id="options_24_12" value="135"  price="40" /><span class="label"><label for="options_24_12">Magento Professional - Enterprise Edition 1.13.x <span class="price-notice">+<span class="price">€40.00</span></span></label></span><script type="text/javascript">$('options_24_12').advaiceContainer = 'options-24-container';$('options_24_12').callbackFunction = 'validateOptionsCallback';</script></li><li><input type="radio" class="radio  validate-one-required-by-name product-custom-option" onclick="opConfig.reloadPrice()" name="options[24]" id="options_24_13" value="172"  price="40" /><span class="label"><label for="options_24_13">Magento Professional - Enterprise Edition 1.14.x <span class="price-notice">+<span class="price">€40.00</span></span></label></span><script type="text/javascript">$('options_24_13').advaiceContainer = 'options-24-container';$('options_24_13').callbackFunction = 'validateOptionsCallback';</script></li></ul>                                    <span id="options-24-container"></span>
+                        </div>
+</dd>
+            
+<dt><label>Module Installation</label></dt>
+<dd class="last">
+    <div class="input-box">
+        <ul id="options-23-list" class="options-list"><li><input type="radio" id="options_23" class="radio product-custom-option" name="options[23]" onclick="opConfig.reloadPrice()" value="" checked="checked" /><span class="label"><label for="options_23">None</label></span></li><li><input type="radio" class="radio  product-custom-option" onclick="opConfig.reloadPrice()" name="options[23]" id="options_23_2" value="31"  price="25" /><span class="label"><label for="options_23_2">Yes (We will contact you for details)  <span class="price-notice">+<span class="price">€25.00</span></span></label></span></li></ul>            </div>
+</dd>
+        </dl>
+
+<script type="text/javascript">
+//<![CDATA[
+enUS = {"m":{"wide":["January","February","March","April","May","June","July","August","September","October","November","December"],"abbr":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]}}; // en_US locale reference
+Calendar._DN = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]; // full day names
+Calendar._SDN = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]; // short day names
+Calendar._FD = 1; // First day of the week. "0" means display Sunday first, "1" means display Monday first, etc.
+Calendar._MN = ["January","February","March","April","May","June","July","August","September","October","November","December"]; // full month names
+Calendar._SMN = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]; // short month names
+Calendar._am = "am"; // am/pm
+Calendar._pm = "pm";
+
+// tooltips
+Calendar._TT = {};
+Calendar._TT["INFO"] = 'About the calendar';
+
+Calendar._TT["ABOUT"] =
+'DHTML Date/Time Selector\n' +
+"(c) dynarch.com 2002-2005 / Author: Mihai Bazon\n" +
+'For latest version visit: http://www.dynarch.com/projects/calendar/\n' +
+'Distributed under GNU LGPL. See http://gnu.org/licenses/lgpl.html for details.' +
+'\n\n' +
+'Date selection:\n' +
+'- Use the \xab, \xbb buttons to select year\n' +
+'- Use the \u2039 buttons to select month\n' +
+'- Hold mouse button on any of the above buttons for faster selection.';
+Calendar._TT["ABOUT_TIME"] = '\n\n' +
+'Time selection:\n' +
+'- Click on any of the time parts to increase it\n' +
+'- or Shift-click to decrease it\n' +
+'- or click and drag for faster selection.';
+
+Calendar._TT["PREV_YEAR"] = 'Prev. year (hold for menu)';
+Calendar._TT["PREV_MONTH"] = 'Prev. month (hold for menu)';
+Calendar._TT["GO_TODAY"] = 'Go Today';
+Calendar._TT["NEXT_MONTH"] = 'Next month (hold for menu)';
+Calendar._TT["NEXT_YEAR"] = 'Next year (hold for menu)';
+Calendar._TT["SEL_DATE"] = 'Select date';
+Calendar._TT["DRAG_TO_MOVE"] = 'Drag to move';
+Calendar._TT["PART_TODAY"] = ' (' + "today" + ')';
+
+// the following is to inform that "%s" is to be the first day of week
+Calendar._TT["DAY_FIRST"] = 'Display %s first';
+
+// This may be locale-dependent. It specifies the week-end days, as an array
+// of comma-separated numbers. The numbers are from 0 to 6: 0 means Sunday, 1
+// means Monday, etc.
+Calendar._TT["WEEKEND"] = "0,6";
+
+Calendar._TT["CLOSE"] = 'Close';
+Calendar._TT["TODAY"] = "today";
+Calendar._TT["TIME_PART"] = '(Shift-)Click or drag to change value';
+
+// date formats
+Calendar._TT["DEF_DATE_FORMAT"] = "%e %b %Y";
+Calendar._TT["TT_DATE_FORMAT"] = "%e %B %Y";
+
+Calendar._TT["WK"] = "Week";
+Calendar._TT["TIME"] = 'Time:';
+//]]>
+</script>
+            <p class="required">* Required Fields</p>
+    </div>
+<script type="text/javascript">decorateGeneric($$('#product-options-wrapper dl'), ['last']);</script>
+<div class="product-options-bottom">
+    
+
+                
+    <div class="price-box">
+                                                            <span class="regular-price" id="product-price-14_clone">
+                                            <span class="price">€39.00</span>                                    </span>
+                        
+        </div>
+
+    <div class="add-to-cart">
+                <!--label for="qty">Qty:</label>
+        <input type="text" name="qty" id="qty" maxlength="12" value="1" title="Qty" class="input-text qty" /-->
+        
+        <!--div class="pull-left"-->
+    <label class="qty-spinner-label" for="qty">Qty:</label>
+<!--/div-->
+<div class="qty-spinner-container">
+    <!--div class=""-->
+        <input type="text" name="qty" id="qty" maxlength="12" value="1" title="Qty" class="input-text qty" />
+        <a href="#" id="catalog-qty-plus" class="btn-spinner-plus"><span class="glyphicon glyphicon-plus"></span><span class="sr-only">+</span></a>
+        <a href="#" id="catalog-qty-minus" class="btn-spinner-minus"><span class="glyphicon glyphicon-minus"></span><span class="sr-only">-</span></a>                
+    <!--/div-->
+</div>
+        
+                <button type="button" title="Add to Cart" class="btn-add-to-cart" onclick="productAddToCartForm.submit(this)"><span><span>Add to Cart</span></span></button>
+            </div>
+
+
+<ul class="add-to-links">
+</ul>
+</div>
+                </div>
+		                    </form>
+        <script type="text/javascript">
+            //<![CDATA[
+            var productAddToCartForm = new VarienForm('product_addtocart_form');
+            productAddToCartForm.submit = function(button, url) {
+                if (this.validator.validate()) {
+                    var form = this.form;
+                    var oldUrl = form.action;
+                    if (url) {
+                        form.action = url;
+                    }
+                    var e = null;
+                    try {
+                        this.form.submit();
+                    } catch (e) {
+                    }
+                    this.form.action = oldUrl;
+                    if (e) {
+                        throw e;
+                    }
+                    if (button && button != 'undefined') {
+                        button.disabled = true;
+                    }
+                }
+            }.bind(productAddToCartForm);
+            productAddToCartForm.submitLight = function(button, url) {
+                if (this.validator) {
+                    var nv = Validation.methods;
+                    delete Validation.methods['required-entry'];
+                    delete Validation.methods['validate-one-required'];
+                    delete Validation.methods['validate-one-required-by-name'];
+                    // Remove custom datetime validators
+                    for (var methodName in Validation.methods) {
+                        if (methodName.match(/^validate-datetime-.*/i)) {
+                            delete Validation.methods[methodName];
+                        }
+                    }
+                    if (this.validator.validate()) {
+                        if (url) {
+                            this.form.action = url;
+                        }
+                        this.form.submit();
+                    }
+                    Object.extend(Validation.methods, nv);
+                }
+            }.bind(productAddToCartForm);
+            //]]>
+        </script>
+
+                <div class="col-xs-12 with-margin-top">
+            <h2 id="reviewslist">Customer Reviews for Ajax Add To Cart</h2>
+                <div class="ratings" >
+        <span class="sr-only" >Ajax Add To Cart</span>
+                    <div class="rating-box">
+                <div class="rating" style="width:100%"  ><!--span itemprop="average"-->5</span></div>
+                <!--div  class="sr-only" ><span itemprop="best">5</span><span itemprop="reviewCount">10</span></div-->
+            </div>
+                <p class="rating-links">
+            <a href="https://www.mangoextensions.com/ajax-add-to-cart-for-magento.html#reviewslist"><span>10</span> Review(s)</a>
+            <span class="separator">|</span>
+            <a href="https://www.mangoextensions.com/review/product/list/id/14/#review-form">Add Your Review</a>
+        </p>
+    </div>
+
+        </div>
+            
+<div class="box-collateral box-reviews" id="customer-reviews">
+                                    <div class="product-review-item" itemscope itemtype="http://data-vocabulary.org/Review">
+                    <p>
+                        <span itemprop="itemreviewed" class="sr-only">Ajax Add To Cart</span><a href="https://www.mangoextensions.com/review/product/view/id/66/"><span itemprop="summary"><b>Super</b></span></a> Review by <span itemprop="reviewer">Nadine</span>                    </p>
+                                                                <table class="ratings-table">
+                            <col width="1" />
+                            <col />
+                            <tbody>
+                                                                    <tr>
+                                        <th>Rating</th>
+                                        <td>
+                                            <div class="rating-box">
+                                                <span itemprop="rating" class="sr-only">5</span>
+                                                <div class="rating" style="width:100%;"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                                            </tbody>
+                        </table>
+                                        <blockquote>
+                        <div itemprop="description">
+                            I have upgraded my site to 1.9.3.2. Previously i used this Mango module and Fernando has customise it to my theme. I bought the new module again from Mango and Fernando has customise it. On my previous theme Fernando has customise my One page checkout for me, and in this new version he did this again. Works like a charm. Mango is a company i would advise anyone to use for modules and customisation's. They really understand what Magento is about.                          </div>
+                        <footer><time itemprop="dtreviewed" datetime="2017-04-29 02:49:03">(Posted on 29/04/2017)</time></footer>
+                    </blockquote>
+                </div>
+                        <div class="product-review-item" itemscope itemtype="http://data-vocabulary.org/Review">
+                    <p>
+                        <span itemprop="itemreviewed" class="sr-only">Ajax Add To Cart</span><a href="https://www.mangoextensions.com/review/product/view/id/51/"><span itemprop="summary"><b>Very good extension, great support</b></span></a> Review by <span itemprop="reviewer">Fabrice</span>                    </p>
+                                                                <table class="ratings-table">
+                            <col width="1" />
+                            <col />
+                            <tbody>
+                                                                    <tr>
+                                        <th>Rating</th>
+                                        <td>
+                                            <div class="rating-box">
+                                                <span itemprop="rating" class="sr-only">5</span>
+                                                <div class="rating" style="width:100%;"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                                            </tbody>
+                        </table>
+                                        <blockquote>
+                        <div itemprop="description">
+                            Works exactly as expected ! I needed to contact the support, and problem was solved very quickly. I recommend that extension !                        </div>
+                        <footer><time itemprop="dtreviewed" datetime="2016-04-18 13:01:21">(Posted on 18/04/2016)</time></footer>
+                    </blockquote>
+                </div>
+                        <div class="product-review-item" itemscope itemtype="http://data-vocabulary.org/Review">
+                    <p>
+                        <span itemprop="itemreviewed" class="sr-only">Ajax Add To Cart</span><a href="https://www.mangoextensions.com/review/product/view/id/39/"><span itemprop="summary"><b>Very good extension, best support</b></span></a> Review by <span itemprop="reviewer">federicobianco</span>                    </p>
+                                                                <table class="ratings-table">
+                            <col width="1" />
+                            <col />
+                            <tbody>
+                                                                    <tr>
+                                        <th>Rating</th>
+                                        <td>
+                                            <div class="rating-box">
+                                                <span itemprop="rating" class="sr-only">5</span>
+                                                <div class="rating" style="width:100%;"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                                            </tbody>
+                        </table>
+                                        <blockquote>
+                        <div itemprop="description">
+                            Extension very easy to install and configure. The customer support is excellent, every little problem with my site was resolved quickly.<br />
+                        </div>
+                        <footer><time itemprop="dtreviewed" datetime="2015-07-15 18:49:02">(Posted on 15/07/2015)</time></footer>
+                    </blockquote>
+                </div>
+                        <div class="product-review-item" itemscope itemtype="http://data-vocabulary.org/Review">
+                    <p>
+                        <span itemprop="itemreviewed" class="sr-only">Ajax Add To Cart</span><a href="https://www.mangoextensions.com/review/product/view/id/21/"><span itemprop="summary"><b>Fantastic Product and Great Service from Mango Extensions</b></span></a> Review by <span itemprop="reviewer">Oz &amp; Mr. Curious</span>                    </p>
+                                                                <table class="ratings-table">
+                            <col width="1" />
+                            <col />
+                            <tbody>
+                                                                    <tr>
+                                        <th>Rating</th>
+                                        <td>
+                                            <div class="rating-box">
+                                                <span itemprop="rating" class="sr-only">5</span>
+                                                <div class="rating" style="width:100%;"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                                            </tbody>
+                        </table>
+                                        <blockquote>
+                        <div itemprop="description">
+                            I've had many customers  in the past who would ring and ask where is the shopping basket. Realised that the shopping basket on Magento isn't very noticeable for customers who don't frequently shop on the internet. <br />
+<br />
+Found this reasonably priced product from Mango. We had them configure the extension to suit our website and our needs as well. Fernando has been exceptionally helpful with this. Delivery of the work was done fast and on time. <br />
+<br />
+Highly recommend this extension. Makes it much easier for our customers to navigate to the shopping basket. <br />
+<br />
+Would also highly recommend to go with Mango Extensions. They are professional and knowledgeable. <br />
+<br />
+Since we bought this extension and having experienced the good service from the team, we have gone back to them several times to help us with more work.                         </div>
+                        <footer><time itemprop="dtreviewed" datetime="2014-03-28 14:03:46">(Posted on 28/03/2014)</time></footer>
+                    </blockquote>
+                </div>
+                        <div class="product-review-item" itemscope itemtype="http://data-vocabulary.org/Review">
+                    <p>
+                        <span itemprop="itemreviewed" class="sr-only">Ajax Add To Cart</span><a href="https://www.mangoextensions.com/review/product/view/id/20/"><span itemprop="summary"><b>Great experience!</b></span></a> Review by <span itemprop="reviewer">Nigel</span>                    </p>
+                                                                <table class="ratings-table">
+                            <col width="1" />
+                            <col />
+                            <tbody>
+                                                                    <tr>
+                                        <th>Rating</th>
+                                        <td>
+                                            <div class="rating-box">
+                                                <span itemprop="rating" class="sr-only">5</span>
+                                                <div class="rating" style="width:100%;"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                                            </tbody>
+                        </table>
+                                        <blockquote>
+                        <div itemprop="description">
+                            A great extension and great service offered by Fernando.  He patiently sorted out our ordering problems and carried out a successful install for us.<br />
+The plugin itself is simple and extremely customer friendly.<br />
+Highly recommended!<br />
+Thanks!<br />
+                        </div>
+                        <footer><time itemprop="dtreviewed" datetime="2013-10-24 04:21:50">(Posted on 24/10/2013)</time></footer>
+                    </blockquote>
+                </div>
+                        <div class="product-review-item" itemscope itemtype="http://data-vocabulary.org/Review">
+                    <p>
+                        <span itemprop="itemreviewed" class="sr-only">Ajax Add To Cart</span><a href="https://www.mangoextensions.com/review/product/view/id/18/"><span itemprop="summary"><b>Really recommended!</b></span></a> Review by <span itemprop="reviewer">Tingting Zhang</span>                    </p>
+                                                                <table class="ratings-table">
+                            <col width="1" />
+                            <col />
+                            <tbody>
+                                                                    <tr>
+                                        <th>Rating</th>
+                                        <td>
+                                            <div class="rating-box">
+                                                <span itemprop="rating" class="sr-only">5</span>
+                                                <div class="rating" style="width:100%;"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                                            </tbody>
+                        </table>
+                                        <blockquote>
+                        <div itemprop="description">
+                            I was testing and comparing almost all ajax add to cart modules in Magento connect. But i have to say this one is the best in terms of not only look, or price, also, the speed! It's fantastic, working like a charm. I cannot be happier after purchasing it.<br />
+<br />
+So i asked them to tailored extra function associated -- display the products in shopping cart, in the header... great and fast job! Really good people! check www.vrolijkspeelgoed.nl. I designed it, but they made this function a pride of my shop!<br />
+<br />
+Later on, I encountered some conflicts of Varnish and Ajax. I still couldn't give up this ajax add to cart although somebody recommended me to try other<br />
+ajax add to cart. I just cannot chose one better feature as so clean and clear. So finally I asked Fernando to help me. It's totally fixed after my struggling quite a few days!<br />
+<br />
+Cannot appreciated more!<br />
+<br />
+Hereby wrote down my story working with them. Really recommended!<br />
+                        </div>
+                        <footer><time itemprop="dtreviewed" datetime="2013-06-28 17:08:31">(Posted on 28/06/2013)</time></footer>
+                    </blockquote>
+                </div>
+                        <div class="product-review-item" itemscope itemtype="http://data-vocabulary.org/Review">
+                    <p>
+                        <span itemprop="itemreviewed" class="sr-only">Ajax Add To Cart</span><a href="https://www.mangoextensions.com/review/product/view/id/11/"><span itemprop="summary"><b>Great Extension</b></span></a> Review by <span itemprop="reviewer">Paul</span>                    </p>
+                                                                <table class="ratings-table">
+                            <col width="1" />
+                            <col />
+                            <tbody>
+                                                                    <tr>
+                                        <th>Rating</th>
+                                        <td>
+                                            <div class="rating-box">
+                                                <span itemprop="rating" class="sr-only">5</span>
+                                                <div class="rating" style="width:100%;"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                                            </tbody>
+                        </table>
+                                        <blockquote>
+                        <div itemprop="description">
+                            This is a great extension! Best price and best service! Very fast support even on weekends. I wanted something with jQuery and that's exactly right.                        </div>
+                        <footer><time itemprop="dtreviewed" datetime="2013-01-19 20:56:05">(Posted on 19/01/2013)</time></footer>
+                    </blockquote>
+                </div>
+                        <div class="product-review-item" itemscope itemtype="http://data-vocabulary.org/Review">
+                    <p>
+                        <span itemprop="itemreviewed" class="sr-only">Ajax Add To Cart</span><a href="https://www.mangoextensions.com/review/product/view/id/9/"><span itemprop="summary"><b>Looks great!</b></span></a> Review by <span itemprop="reviewer">Agbi</span>                    </p>
+                                                                <table class="ratings-table">
+                            <col width="1" />
+                            <col />
+                            <tbody>
+                                                                    <tr>
+                                        <th>Rating</th>
+                                        <td>
+                                            <div class="rating-box">
+                                                <span itemprop="rating" class="sr-only">5</span>
+                                                <div class="rating" style="width:100%;"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                                            </tbody>
+                        </table>
+                                        <blockquote>
+                        <div itemprop="description">
+                            Got this extension for a custom donation site we were building. We had some trouble getting it working due to some custom requirements for the site, but Fernando was super helpful and helped us with the install.<br />
+<br />
+Looks great on the site and works great!                        </div>
+                        <footer><time itemprop="dtreviewed" datetime="2012-11-19 14:50:45">(Posted on 19/11/2012)</time></footer>
+                    </blockquote>
+                </div>
+                        <div class="product-review-item" itemscope itemtype="http://data-vocabulary.org/Review">
+                    <p>
+                        <span itemprop="itemreviewed" class="sr-only">Ajax Add To Cart</span><a href="https://www.mangoextensions.com/review/product/view/id/5/"><span itemprop="summary"><b>Perfect!</b></span></a> Review by <span itemprop="reviewer">Ollivier</span>                    </p>
+                                                                <table class="ratings-table">
+                            <col width="1" />
+                            <col />
+                            <tbody>
+                                                                    <tr>
+                                        <th>Rating</th>
+                                        <td>
+                                            <div class="rating-box">
+                                                <span itemprop="rating" class="sr-only">5</span>
+                                                <div class="rating" style="width:100%;"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                                            </tbody>
+                        </table>
+                                        <blockquote>
+                        <div itemprop="description">
+                            Very good extension and EXCELLENT support (Gracias Fernando!). Love the option to pass a quantity to the cart.                        </div>
+                        <footer><time itemprop="dtreviewed" datetime="2012-04-27 10:42:47">(Posted on 27/04/2012)</time></footer>
+                    </blockquote>
+                </div>
+                        <div class="product-review-item" itemscope itemtype="http://data-vocabulary.org/Review">
+                    <p>
+                        <span itemprop="itemreviewed" class="sr-only">Ajax Add To Cart</span><a href="https://www.mangoextensions.com/review/product/view/id/2/"><span itemprop="summary"><b>The best Ajax add to cart Extension for Magento</b></span></a> Review by <span itemprop="reviewer">Francesco</span>                    </p>
+                                                                <table class="ratings-table">
+                            <col width="1" />
+                            <col />
+                            <tbody>
+                                                                    <tr>
+                                        <th>Rating</th>
+                                        <td>
+                                            <div class="rating-box">
+                                                <span itemprop="rating" class="sr-only">5</span>
+                                                <div class="rating" style="width:100%;"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                                            </tbody>
+                        </table>
+                                        <blockquote>
+                        <div itemprop="description">
+                            This extension works really well, is the most complete and user friendly ajax add to cart extension for magento. <br />
+I obtained a best user experience and increased my conversion rate.<br />
+Only one request: in the next edition include the possibility to choice the numbers of products to add to cart also for grouped products.<br />
+Thanks                        </div>
+                        <footer><time itemprop="dtreviewed" datetime="2011-06-09 18:18:38">(Posted on 09/06/2011)</time></footer>
+                    </blockquote>
+                </div>
+            </div>
+        
+    </div>
+</div>
+
+<script type="text/javascript">
+    var lifetime = 3600;
+    var expireAt = Mage.Cookies.expires;
+    if (lifetime > 0) {
+        expireAt = new Date();
+        expireAt.setTime(expireAt.getTime() + lifetime * 1000);
+    }
+    Mage.Cookies.set('external_no_cache', 1, expireAt);
+</script>
+                        </div>
+                        <div class="col-right sidebar"><div class="" id="mangotemplates-banner-right" style="border: 1px solid #efefef;padding:0px 15px; ">
+<h4 style="color:#666;"  class="text-center">This extension is included in</h4>
+<p class="text-center">
+<a href="http://www.mangotemplates.com">
+<img class="" src="https://www.mangoextensions.com/skin/frontend/mango/mangoextensions/images/right-side-300-w.jpg" style="max-width:100%;" />
+</a>
+</p>
+<p class="text-right">
+<a href="http://www.mangotemplates.com" class="btn btn-xs btn-primary text-right">Read more</a>
+</p>
+</div>
+<br/><br/>
+<script type="text/javascript">
+jQuery(document).ready(function(){
+  jQuery("#mangotemplates-banner-right a").click(function(e){
+     e.preventDefault();
+     window.open(  jQuery(this).attr("href") );
+     _title = jQuery("div.product-name h1").text();
+     _gaq.push(['_trackEvent', 'MangoTemplates.com Banner', 'Right Banner', _title]);
+  });
+});
+</script><div class="block block-related">
+    <div class="block-title">
+        <strong><span>Related Products</span></strong>
+    </div>
+    <div class="block-content">
+        <p class="block-subtitle">You may also be interested in the following product(s):</p>
+        <ol class="mini-products-list" id="block-related">
+                    <li class="item">
+                
+                <div class="product">
+                    <a href="https://www.mangoextensions.com/ajax-layered-navigation-with-price-slider-for-magento.html" title="Ajax Layered Navigation and Price Slider" class="product-image"><img src="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/100x/9df78eab33525d08d6e5fb8d27136e95/p/r/priceslidersite.jpg" width="80" height="80" alt="Ajax Layered Navigation and Price Slider" /></a>
+                    <div class="product-details">
+                        <p class="product-name"><a href="https://www.mangoextensions.com/ajax-layered-navigation-with-price-slider-for-magento.html">Ajax Layered Navigation and Price Slider</a></p>
+                        
+
+                
+    <div class="price-box">
+                                                            <span class="regular-price" id="product-price-6-related">
+                                            <span class="price">€59.00</span>                                    </span>
+                        
+        </div>
+
+                                            </div>
+                </div>
+            </li>
+                    <li class="item">
+                
+                <div class="product">
+                    <a href="https://www.mangoextensions.com/color-swatches-for-products-list-and-product-details-page.html" title="Color Swatches for Configurable Products" class="product-image"><img src="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/100x/9df78eab33525d08d6e5fb8d27136e95/c/o/color-swatches-magento-mango-extension.jpg" width="80" height="80" alt="Color Swatches for Configurable Products" /></a>
+                    <div class="product-details">
+                        <p class="product-name"><a href="https://www.mangoextensions.com/color-swatches-for-products-list-and-product-details-page.html">Color Swatches for Configurable Products</a></p>
+                        
+
+                
+    <div class="price-box">
+                                                            <span class="regular-price" id="product-price-8-related">
+                                            <span class="price">€39.00</span>                                    </span>
+                        
+        </div>
+
+                                            </div>
+                </div>
+            </li>
+                    <li class="item">
+                
+                <div class="product">
+                    <a href="https://www.mangoextensions.com/quick-view-for-magento.html" title="Quick View for Catalog" class="product-image"><img src="https://www.mangoextensions.com/media/catalog/product/cache/1/thumbnail/100x/9df78eab33525d08d6e5fb8d27136e95/q/u/quickview-icon-site.jpg" width="80" height="80" alt="Quick View for Catalog" /></a>
+                    <div class="product-details">
+                        <p class="product-name"><a href="https://www.mangoextensions.com/quick-view-for-magento.html">Quick View for Catalog</a></p>
+                        
+
+                
+    <div class="price-box">
+                                                            <span class="regular-price" id="product-price-16-related">
+                                            <span class="price">€29.00</span>                                    </span>
+                        
+        </div>
+
+                                            </div>
+                </div>
+            </li>
+                </ol>
+        <script type="text/javascript">decorateList('block-related', 'none-recursive')</script>
+    </div>
+   
+</div>
+<div class="paypal-logo">
+    <!-- PayPal Logo -->
+    <table border="0" cellpadding="10" cellspacing="0" align="center">
+        <tr>
+            <td align="center">Payments By</td></tr>
+        <tr><td align="center">
+                <a href="https://www.paypal.com/gb/cgi-bin/webscr?cmd=xpt/Marketing/popup/OLCWhatIsPayPal-outside" title="How PayPal Works" onclick="javascript:window.open('https://www.paypal.com/uk/webapps/mpp/paypal-popup', 'WIPaypal', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1060, height=700');
+                return false;">
+                <img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-200px.png" border="0" alt="PayPal Logo"></a>
+            <div style="text-align:center"><a href="https://www.paypal.com/gb/cgi-bin/webscr?cmd=xpt/Marketing/popup/OLCWhatIsPayPal-outside" target="_blank" ><font size="2" face="Arial" color="#0079CD"><b>How PayPal Works</b></font></a></div>
+            </td>
+        </tr>
+    </table>
+    <!-- PayPal Logo -->
+</div>
+
+
+
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <div class="page-row-container container">
+                                <div class="footer-row footer-row-1">
+                                                                        <div class="col-xs-12 col-sm-6 col-md-2  first">
+            <h4>Mango Extensions</h4>
+
+<ul class="nav nav-stacked nav-pills">
+<li><a href="https://www.mangoextensions.com/about.html/">About Us</a></li>
+<li><a href="https://www.mangoextensions.com/magento-custom-development-services.html">Custom Development</a></li>
+<li><a href="https://www.mangoextensions.com/faq.html">FAQ</a></li>
+<li><a href="https://www.mangoextensions.com/blog">Blog</a></li>
+<li><a href="https://www.mangoextensions.com/contacts">Contact Us</a></li>
+<!--li class="last privacy"><a href="https://www.mangoextensions.com/privacy-policy-cookie-restriction-mode">Privacy Policy</a></li-->
+</ul>                            </div>
+                            <div class="footer-divider visible-xs ">&nbsp;</div>
+                                                    <div class="col-xs-12 col-sm-6 col-md-3 ">
+            <h4>Ajax Navigation</h4>
+                                <ul class="nav nav-stacked nav-pills">
+                                    <li><a href="https://www.mangoextensions.com/extensions/ajax-toolbar-and-pagination-for-magento.html">Pagination & Toolbar</a></li>
+                                    <li><a href="https://www.mangoextensions.com/extensions/ajax-layered-navigation-dropdowns-for-magento.html">Drop Down Boxes for Layered Navigation</a></li>
+                                    <li><a href="https://www.mangoextensions.com/extensions/ajax-layered-navigation-with-price-slider-for-magento.html">Layered Navigation &amp; Price Slider</a></li>
+                                    <li><a href="https://www.mangoextensions.com/extensions/ajax-layered-navigation-with-multiple-sliders.html">Layered Navigation &amp; Multiple Sliders</a></li>
+                                </ul>                            </div>
+                            <div class="footer-divider visible-xs  visible-sm">&nbsp;</div>
+                                                    <div class="col-xs-12 col-sm-6 col-md-2 ">
+            <h4>Quickview &amp; Carousel</h4>
+                                <ul class="nav nav-stacked nav-pills">
+                                    
+
+<li><a href="https://www.mangoextensions.com/extensions/quick-view-for-magento.html">Quickview</a></li>
+                                    <li><a href="https://www.mangoextensions.com/extensions/catalog-slideshow-and-quick-view.html">Catalog Slideshow & Quickview</a></li>
+                                    <li><a href="https://www.mangoextensions.com/extensions/dynamic-catalog-slideshow-and-quick-view.html">Catalog Dynamic Slideshow & Quickview</a></li>
+
+                                </ul>                            </div>
+                            <div class="footer-divider visible-xs ">&nbsp;</div>
+                                                    <div class="col-xs-12 col-sm-6 col-md-2 ">
+            <h4>Color Swatches</h4>
+                                <ul class="nav nav-stacked nav-pills">
+<li><a href="https://www.mangoextensions.com/extensions/advanced-attributes-swatches-for-magento.html">Advanced Color Swatches</a></li>
+                                    <li><a href="https://www.mangoextensions.com/extensions/color-swatches-for-products-list.html">Simple Color Swatches</a></li>
+                                    <li><a href="https://www.mangoextensions.com/extensions/color-swatches-for-products-list-and-product-details-page.html">For Product Details Page</a></li>
+
+                                </ul>                            </div>
+                            <div class="footer-divider visible-xs  visible-sm">&nbsp;</div>
+                                                    <div class="col-xs-12 col-sm-6 col-md-3 ">
+            <h4>Other Extensions for Magento®</h4>
+                                <ul class="nav nav-stacked nav-pills">
+
+<li>
+                                <a href="https://www.mangoextensions.com/extensions/ajax-add-to-cart-for-magento.html">Ajax Add To Cart</a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a href="https://www.mangoextensions.com/extensions/low-order-fee-for-magento.html">Low Order Fee</a>
+                            </li>
+<li>
+                                <a href="https://www.mangoextensions.com/extensions/custom-category-attributes-magento-extension.html">Custom Category Attributes Manager</a>
+                            </li>
+                            <li>
+                                <a href="https://www.mangoextensions.com/magento-custom-development-services.html">Web Development and Custom Services</a>
+                            </li>
+
+                          
+                                </ul>                            </div>
+                            <div class="footer-divider visible-xs ">&nbsp;</div>
+                         
+                        <div class="footer-divider visible-md visible-lg">&nbsp;</div>
+                                    </div>
+                            </div>
+                <div class="page-row-container container">
+            <div class="footer-bottom">
+                            <div  class="col-xs-12 col-sm-4 copyright-note">
+                    &copy; 2009-2015 Mango Extensions. All Rights Reserved.                </div>
+                <div  class="col-xs-12 col-sm-4 back-to-top text-center">
+                    <a href="#page-top" id="top-link">Back to Top&nbsp;<span class="glyphicon glyphicon-chevron-up"></span></a>
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                                </div>
+                            </div></div>
+                    </div>
+    </footer>
+        <div class="modal fade" id="modal-container-ajaxcart">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove"></span></button>
+                <h4 class="modal-title">Shopping Cart</h4>
+            </div>
+            <div class="modal-body modal-loader">
+                <div class="loader">Loading, please wait...</div>
+            </div>
+            <div class="modal-body modal-result">
+                
+            </div>
+                        
+            
+            <div class="clearfix"></div>
+            
+            
+            <div class="modal-footer ajaxcart-default-buttons">
+                <a href="#" class="btn btn-default pull-left" data-dismiss="modal">Continue Shopping</a>
+                <a href="https://www.mangoextensions.com/checkout/cart/" class="btn btn-primary"><span class="glyphicon glyphicon-shopping-cart"></span>&nbsp;Go to Cart</a>
+            </div>
+            <div class="modal-footer  ajaxcart-configurable-buttons">
+                <a href="#" class="btn btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>&nbsp;Cancel</a>
+                <a href="#" class="btn btn-primary"><span class="glyphicon glyphicon-shopping-cart"></span>&nbsp;Add to Cart</a>
+            </div>
+            <div class="modal-footer  ajaxcart-simple-buttons">
+                <a href="#" class="btn btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>&nbsp;Cancel</a>
+                <a href="#" class="btn btn-primary"><span class="glyphicon glyphicon-shopping-cart"></span>&nbsp;Add to Cart</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    //<![CDATA[
+    _ajaxcart_carturl = "https://www.mangoextensions.com/checkout/cart/";
+    _ajaxcart_dialogWidth = 400;
+    _ajaxcart_confirmdelete = "Are you sure you would like to remove this item from the shopping cart?";
+    _ajaxcart_simpleqtyform = 0;
+    _ajaxcart_error_msg = "Error, please refresh the page and try again...";
+
+    //]]>
+</script><div id="product-contact-form" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove"></span></button>
+                <h3>Contact Us</h3>
+            </div>
+            <div class="modal-body modal-loader" style="display:none;">
+                <div class="loader">Loading, please wait...</div>
+            </div>
+
+            <div id="contact_product_messages" class="modal-body modal-result" style="display:none;">
+                <ul class="messages">
+                    <li class="error-msg">
+                        <ul>
+                            <li class="msg-contents"></li>
+                        </ul>
+                    </li>
+                    <li class="success-msg">
+                        <ul>
+                            <li class="msg-contents"></li>
+                        </ul>
+                    </li>   
+                </ul>
+            </div>
+
+            <div class="modal-body" id="productContactForm-container">
+
+                <form action="https://www.mangoextensions.com/ajaxcontacts/ajaxIndex/postAjax/" id="productContactForm" method="post">
+                    <input name="form_key" type="hidden" value="e674FRCSimO5VQcn" />
+                    <ul class="form-list">
+                        <li class="">
+                            <label for="subject" class="required"><em>*</em>Subject</label>
+                            <div class="input-box">
+                                <input name="main" id="main" title="Subject" value="Ajax Add To Cart" class="input-text required-entry" type="text" />
+                            </div>
+                        </li>
+                        <li class="">
+                            <label for="name" class="required"><em>*</em>Name</label>
+                            <div class="input-box">
+                                <input name="name" id="name" title="Name" value="" class="input-text required-entry" type="text" />
+                            </div>
+                        </li>
+                        <li class="">
+                            <label for="email" class="required"><em>*</em>Email</label>
+                            <div class="input-box">
+                                <input name="email" id="email" title="Email" value="" class="input-text required-entry validate-email" type="text" />
+                            </div>
+                        </li>
+                        <li class="">
+                            <label for="comment" class="required"><em>*</em>Comment</label>
+                            <div class="input-box">
+                                <textarea name="comment" id="comment" title="Comment" class="required-entry input-text" cols="5" rows="3"></textarea>
+                            </div>
+                        </li>
+                        <li class="">
+                    <p class="required">* Required Fields</p>
+                        <input type="text" name="hideit" id="hideit" value="" style="display:none !important;" />       
+                        </li>
+                    </ul>
+                    
+                </form>
+            </div>
+            <div class="modal-footer ajaxcontacts-buttons">
+                <button id="ajaxcontacts-submit-button" type="button" onclick="productContactForm.submit(); return false;" title="Submit" class="btn btn-primary btn-large">Submit</button>
+                <a href="#" class="btn btn-large btn-default" data-dismiss="modal">Close</a>
+            </div>
+            <script type="text/javascript">
+                //<![CDATA[
+                var productContactForm = new VarienForm('productContactForm');
+                productContactForm.submit = function() {
+                    if (this.validator.validate()) {
+                        //alert("passed validation");
+                        //this.form.submit();
+                        jQuery(".modal-loader").fadeIn();
+                        jQuery("#contact_product_messages, #ajaxcontacts-submit-button").hide();
+                        jQuery.post("https://www.mangoextensions.com/ajaxcontacts/ajaxIndex/postAjax/", jQuery("#productContactForm").serialize(), function(data) {
+                            //alert( data.result + data.message);
+                            jQuery(".modal-loader").fadeOut();
+                            //alert(data.result);
+                            jQuery("#name, #email, #comment").val("");
+                            jQuery("#productContactForm-container").slideUp();
+                            if (data.result == "error") {
+                                jQuery("#contact_product_messages .error-msg .msg-contents").text(data.message);
+                                jQuery("#contact_product_messages .messages, #contact_product_messages .success-msg").hide();
+                                jQuery("#contact_product_messages, #contact_product_messages .messages, #contact_product_messages .error-msg").fadeIn();
+                                //alert("***");
+                            } else if (data.result == "success") {
+                                jQuery("#contact_product_messages .success-msg .msg-contents").text(data.message);
+                                jQuery("#contact_product_messages .messages, #contact_product_messages .error-msg").hide();
+                                jQuery("#contact_product_messages, #contact_product_messages .messages, #contact_product_messages .success-msg").fadeIn();
+                                //alert("----");
+                            }
+
+                        }, "json");
+                        return false;
+                    }
+                }.bind(productContactForm);
+                jQuery(document).ready(function() {
+                    jQuery("#link-product-contact-form").click(function(e) {
+                        e.preventDefault();
+                        jQuery('#product-contact-form').modal();
+                        jQuery("#contact_product_messages").hide();
+                        jQuery("#ajaxcontacts-submit-button, #productContactForm-container").show();
+                    });
+                });
+                //]]>
+            </script>
+        </div>
+    </div>
+</div>
+            </body>
+</html>

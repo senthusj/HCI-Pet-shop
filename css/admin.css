@@ -1,0 +1,183 @@
+.lathu .header{
+			width:100%;
+			height:10%;
+			background-color:#1d1339;
+	}
+	 .lathu .sidebar{
+			width:20%;
+			height:80%;
+			background-color: #ffff99;
+			border: 2px solid black;
+			float:center;
+	}
+	.lathu .content{
+			
+			height:80%;
+			background-color: #ffffcc;
+			
+	}
+	.lathu .footer{
+			width:100%;
+			height:10%;
+			background-color:#000066;
+	}
+	.lathu .butt
+	{
+		display:block;
+		padding:9px 20px;
+		width:100%;
+		box-sizing:border-box;
+		font:bold 15px Sansation;
+		border-radius:3px;
+		border:none;
+		 margin: 8px 0;
+		 transition:1s;
+	
+	
+	}
+	
+		
+		.lathu .butt
+		{
+			background-color:#404040;
+			color:white;
+			}
+			
+			.lathu select:focus,.lathu input[type=email]:focus,.lathu input[type=password]:focus, .lathu input[type=text]:focus
+			{
+				outline:none;
+				}
+				
+				.lathu .butt:hover
+				{
+					background-color:#e60000;
+					outline:none;
+	 		}
+		.lathu .form3{
+			width:10%;
+			padding:20px 80px;
+			float:center;
+
+	}
+	
+	
+			.lo .content
+	{
+		padding-left:500px;
+		padding-top:20px;
+		background-image:url("images/cc33.jpg");
+		height: 100%;
+	        text-align: center;
+			
+		}
+			
+		.lo .form{
+			border: 3px solid lightblue;
+
+                      background-color:#ada8a8;
+			
+			width:30%;
+			height:auto;
+			padding:20px 80px;
+			text-align:left;
+			}
+			
+   a 
+   {
+		text-decoration:none;
+		}
+
+
+		input[type=text],input[type=email],input[type=password],input[type=date]
+	{
+	
+		display:block;
+		padding:9px 20px;
+		width:100%;
+		box-sizing:border-box;
+		font:bold 15px Sansation;
+		border-radius:3px;
+		border:none;
+		 margin: 8px 0;
+		 transition:1s;
+		 border-left:3px solid orange;
+		 
+	
+	}
+	.lo input[type=submit],input[type=button]
+	{
+	
+	
+		display:block;
+		padding:9px 20px;
+		width:100%;
+		box-sizing:border-box;
+		font:bold 15px Sansation;
+		border-radius:3px;
+		border:none;
+		 margin: 8px 0;
+		 transition:1s;
+	
+	
+	}
+	
+		
+		.lo input[type=submit],input[type=button]
+		{
+			background-color:#009900;
+			color:white;
+			width:100%;
+			}
+			
+			.lo select:focus,.lo input[type=email]:focus,.lo input[type=password]:focus, .lo input[type=text]:focus
+			{
+				outline:none;
+				}
+				
+				.lo input[type=submit]:hover
+				{
+					background-color:#006600;
+					outline:none;
+	 		}
+.lo table, .lo tr, .lo th {
+    border: 1px solid black;
+	
+}
+
+.lo #img1{
+
+margin-left:100px;
+
+
+}	
+.lo .rowcol2 select{
+			float:right;
+			width:30%;
+			
+			}
+		.lo .rowcol2
+		{
+			margin-top:-10%;
+			}
+			
+			.lo .row{
+			margin-top:10px;
+			padding:4px;
+			}
+			
+			.lo .rowcol1
+			{	
+			width:80%;
+				margin-top:-10%;
+				}
+	
+	
+	
+	body, html {
+background-image:url("images/cc33.jpg");
+	height: 100%;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  
+ 
+}

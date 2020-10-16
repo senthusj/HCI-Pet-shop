@@ -1,0 +1,378 @@
+		* {
+    box-sizing: border-box;
+}
+body
+{
+	
+	margin:0;
+	}
+
+.aji form
+{
+	margin-left:100px;
+	height:900px;
+}
+	
+	
+	}
+	.aji .profilecontent
+	{
+		padding-right:10%;
+		height:500px;
+	
+	}
+	
+	.aji .profilecontent2
+	{
+		float:left;
+		height:500px;
+	
+	}
+		.aji #profileimg1
+		{
+			width:150px;
+			height:150px;
+			box-shadow:2px 1px 2px black;
+			}
+			
+			.aji .profilerowbutton
+			{
+				float:left;
+				padding-left:0px;
+				margin-left:1px;
+				
+				}
+				.aji .profilerowbutton button[type=button]
+				{
+					margin-left:10px;
+					width:120px;
+					}
+				
+				.aji .profilerowbutton button[type=button]
+				{
+					
+					background-color:transparent;	
+				
+				}
+				/*---color button------*/
+				.aji #profilebtn1
+				{
+					border:1px solid lightgreen;
+					box-shadow:1px 1px 2px green;
+					}
+					
+					.aji #profilebtn4
+					{
+						border:1px solid #ff6666;
+						box-shadow:1px 1px 2px red;
+						}
+						.aji #profilebtn2
+					{
+						border:1px solid powderblue;
+						box-shadow:1px 1px 2px blue;
+						}
+						.aji #profilebtn3
+					{
+						border:1px solid #b478ed;
+						box-shadow:1px 1px 2px #b300b3;
+						}
+			
+		
+		.aji .profilerowcolumn1
+		{
+			float:left;
+			width:20%;
+			margin-top:30px;
+	
+			
+		}
+		.aji .profilerowcolumn5
+		{
+		
+		float:left;
+			width:20%;
+			margin-top:3px;
+		
+		
+		}
+		
+		
+		.aji .profilerowcolumn2
+		{
+			
+			width:90%;
+	
+			
+			}
+		.aji .profilerow button[type=button],input[type=submit]
+		{
+			
+			float:right;
+			padding:11px;
+			margin-right:5px;
+			border:none;
+			background-color:orange;
+			border-radius:4px;
+			
+
+			}
+			.aji .profilerow button[type=button]:hover,input[type=submit]:hover
+			{
+				border:1px solid black;
+				color:white;
+				text-shadow:2px 1px 1px black;
+			
+			}
+			.aji .profilerow button[type=submit]
+		{
+			float:right;
+			
+			}
+			
+			
+			.aji .profilerow input[type=email],input[type=password]
+			{
+				padding:10px;
+				width:50%;
+				margin-top:30px;
+				
+				border-radius:4px;
+				border:none;
+				box-shadow:1px 1px 1px black;
+				border-left:4px solid orange;
+				
+				
+				}
+				
+				
+			.aji #Ajprofilechange2 .profilerow input[type=text]
+			
+			{
+				
+				padding:10px;
+				width:50%;
+				margin-top:30px;
+				
+				border-radius:4px;
+				border:none;
+				box-shadow:1px 1px 1px black;
+				border-left:4px solid orange;
+				
+				
+			}
+				.aji .profilerow input[type=date]
+			{
+				padding:10px;
+				width:30%;
+				margin-top:9px;
+				border-radius:4px;
+				box-shadow:1px 1px 1px black;
+				border:none;
+				border-left:4px solid orange;
+				
+				}
+				.aji .profilerow select
+			{
+				padding:10px;
+				width:15%;
+				margin-top:9px;
+				border-radius:4px;
+				box-shadow:1px 1px 1px black;
+				border:none;
+				border-left:4px solid orange;
+				}
+				
+					#fselect
+			{
+				padding:10px;
+				width:15%;
+				margin-top:9px;
+				border-radius:4px;
+				box-shadow:1px 1px 1px black;
+				border:none;
+				border-left:4px solid orange;
+				}
+				
+				.aji .profilecontent .profilerow input[type=text]
+			{
+				padding:10px;
+				width:45%;
+				float:left;
+				border-radius:4px;
+				box-shadow:1px 1px 1px black;
+				border:none;
+				border-left:4px solid orange;
+				}
+				
+			.aji .profilerowcolumn3
+			{
+				float:left;
+				width:50%;
+			
+				
+				}
+			.aji #promar
+			{
+				margin-left:5px;
+				}
+				
+				.aji .profilerow
+				{
+				padding:10px;
+				margin-top:20px;
+				}
+				.aji .profilerow
+				{
+					font-size:18px;
+					}
+			.aji .profilerowbutton p
+			{
+				font-size:14px;
+				}
+				
+				.aji .success p {
+    background-color:#ff6666;
+		font-size:15px;
+	color:white;
+	
+	width:75%;
+}
+
+
+				
+				.aji #profilebtn1:hover
+				{
+					background-color:lightgreen;
+					border:1px solid green;
+					color:white;
+					opacity:.8;
+					text-shadow:2px 1px 1px black;
+					}
+				.aji #profilebtn2:hover
+				{
+					background-color:lightblue;
+					border:1px solid blue;
+					color:white;
+					opacity:.8;
+					text-shadow:2px 1px 1px black;
+					}
+					
+					.aji #profilebtn3:hover
+				{
+					background-color:#b478ed;
+					border:1px solid #b300b3;
+					color:white;
+					opacity:.8;
+					text-shadow:2px 1px 1px black;
+					}
+						.aji #profilebtn4:hover
+				{
+					background-color:#ff6666;
+					border:1px solid red;
+					color:white;
+					opacity:.8;
+					text-shadow:2px 1px 1px black;
+					}
+					
+					
+					.aji #Ajprofilechange1 img
+						{
+						
+							width:200px;
+							height:200px;
+							margin-top:100px;
+							box-shadow:1px 2px 1px 1px black;
+						}
+	@media screen and (max-width:1110px)
+	{
+		
+		
+		
+
+					.aji .profilerowbutton button[type=button]
+					{
+						margin-left:8px;
+						width:110px;
+					
+					
+					}
+					.aji form
+					{
+						margin-left:20px;
+						height:900px;
+					}
+					.aji .profilerowcolumn1
+					{
+						display:inline-block;
+						width:100%;
+				
+						
+					}
+					.aji .profilerowcolumn5
+					{
+					
+						
+						
+						display:inline-block;
+					width:100%;
+					
+					}
+					
+					
+					.aji .profilerowcolumn2
+					{
+						
+						display:inline-block;
+						width:100%;
+						
+					}
+					.aji .profilerowcolumn3
+					{
+						display:inline-block;
+						width:100%;
+				
+						
+					}
+					
+					.aji .profilerow input[type=email],input[type=password]
+					{
+					
+					width:50%;
+					
+					
+					}
+				
+				
+				.aji #Ajprofilechange2 .profilerow input[type=text]
+			
+				{
+				
+				
+					width:50%;
+				
+				}
+				
+				
+				.aji .profilerow input[type=date]
+				{
+					width:50%;
+				
+				}
+				
+				.aji .profilerow select
+				{
+					width:50%;
+				}
+				
+					#fselect
+				{
+					width:50%;
+				}
+				
+				.aji .profilecontent .profilerow input[type=text]
+				{
+				
+				}
+				
+
+	}

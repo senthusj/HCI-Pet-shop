@@ -1,0 +1,208 @@
+
+*{
+	box-sizing:border-box;
+}
+
+
+@font-face {
+   font-family: sansation;
+   src: url(sansation_light.woff);
+}
+
+body {
+   font-family: sansation;
+}
+
+.header
+{
+	background-color:#a6a6a6;
+	width:100%;
+	
+	padding:16px;
+			
+}
+
+.linknav ul
+{
+	margin:0;
+	padding:0;
+	list-style-type:none;
+	background-color: #408000;
+	overflow:hidden;
+}
+
+.linknav ul li
+{
+	font:bold 20px Segoe Script;
+	float:left;
+	
+	
+}
+.linknav ul li a
+{
+	display:block;
+	color:white;
+	text-decoration:none;
+	padding:10px;
+	
+	
+}
+.linknav ul li a:hover
+{
+	background-color:white;
+	color:black;
+	
+}
+
+.red{
+	background-color:red;
+}
+
+
+.rightside
+{
+	float:left;
+	width:20%;
+	height:auto;
+	padding:6px;
+	border:1px solid green;
+		
+		
+}
+.leftside
+{
+	float:left;
+	width:20%;
+	height:auto;
+	padding:6px;
+		border:1px solid green;
+		
+}
+
+.middleside
+{
+	float:left;
+	width:60%;
+	height:auto;
+	padding:6px;
+		
+			
+		
+}
+
+.content
+{
+	padding:5px;
+	border:1px solid red;
+	margin-top:3px;
+	
+}
+
+.contentimage
+{
+	border:1px solid yellow;
+	float:left;
+	margin:5px;
+	width:100px;
+	
+	
+}
+.setimage
+{
+	height:250px;
+	padding:1px;
+	
+}
+.contentimage img
+{
+	width:100%;
+	height:110px;
+	opacity:.8;
+}
+	
+	
+	
+input[type=text]
+{
+	margin-top:30px;
+	border-radius:3px;
+	border:none;
+	background-image:url('../images/im1.PNG');
+	background-repeat:no-repeat;
+	background-position:0px 2px;
+	padding:10px 40px;
+	width:140px;
+	transition:1s;
+	
+	
+}
+input[type=text]:focus
+{
+	width:220px;
+	border:1px solid red;
+	outline:none;
+	border-left:4px solid red;
+}
+	
+#shopname
+{
+	font-size:30px;
+	float:left;
+	color:white;
+	margin-top:5px;
+	margin-right:150px;
+	text-shadow:2px 3px 1px black;
+}
+
+#shopname:first-letter
+{
+	font-size:60px;
+	
+}
+
+.headerowcolumn
+{
+	
+	float:left;
+	margin-right:2px;
+
+}
+
+.img1
+{
+	
+	width:140px;
+	height:90px;
+	
+}
+
+
+.contentimage img:hover
+{
+	height:150px;
+	opacity:1;
+}
+
+.row:after
+{
+	content:"";
+	display:table;
+	clear:both;
+}
+
+.footer1
+{
+	background-color:#4d4dff;
+
+	margin:1px;
+	padding:2px;
+}
+
+.footer2
+{
+	margin:0;
+	padding:20px;
+	background-color:black;
+}
+
+

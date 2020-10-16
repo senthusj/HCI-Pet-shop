@@ -1,0 +1,22 @@
+
+input[type=text]
+{
+	
+	border-radius:3px;
+	border:1px solid green;
+	background-image:url('../images/im1.PNG');
+	background-repeat:no-repeat;
+	background-position:0px 2px;
+	padding:10px 40px;
+	width:100px;
+	transition:1s;
+	
+	
+}
+input[type=text]:focus
+{
+	width:220px;
+	border:1px solid red;
+	outline:none;
+	border-left:4px solid red;
+}

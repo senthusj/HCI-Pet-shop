@@ -1,0 +1,127 @@
+*{
+    box-sizing: border-box;
+}
+
+body {
+  
+}
+
+/* Center website */
+.anumain {
+    max-width: 1000px;
+    margin: auto;
+}
+
+h2 {
+    font-size: 12px;
+    word-break: break-all;
+}
+
+.anurow {
+   
+	border:2px solid orange;
+	
+	
+}
+
+/* Add padding BETWEEN each column */
+.anurow,
+.anurow > .anucolumn {
+    padding: 5px;
+}
+
+/* Create three equal columns that floats next to each other */
+.anucolumn {
+    float: left;
+    width: 33.33%;
+    display: none; /* Hide all elements by default */
+}
+
+/* Clear floats after rows */ 
+.anurow:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Content */
+.anucontent {
+    background-color: white;
+    padding: 10px;
+}
+
+/* The "show" class is added to the filtered elements */
+.anushow {
+  display: block;
+}
+
+.anuimage{
+	width:200px;
+	height:200px;
+	padding:10px;
+}
+
+* {
+    box-sizing: border-box;
+}
+@keyframes fade {
+  from {opacity: .4} 
+  to {opacity: 1}
+}
+
+/* On smaller screens, decrease text size */
+@media only screen and (max-width: 300px) {
+  .anutext {font-size: 11px}
+}
+
+.anuzoom {
+    padding: 2px;
+  
+    transition:transform 2s;
+    width: 10px;
+    height: 10px;
+    margin: 0 auto;
+}
+
+ 
+.anucontents {
+    background-color: white;
+    padding: 10px;
+}
+
+
+.anucontent input[type=text]
+
+{
+	padding:3px;
+	width:60px;
+}
+
+
+.mytable
+
+{
+	
+	border-collapse: collapse;
+	
+	
+	
+}
+.anurow input[type=submit]
+
+{
+	
+	border:none;
+	background-color:green;
+	padding:8px;
+	color:white;
+	font-size:18px;
+	border-radius:5px;
+}
+
+.mytable td,th
+
+
+{
+	padding:6px;
+}

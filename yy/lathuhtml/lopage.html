@@ -1,0 +1,170 @@
+<html>
+<head>
+	<style>
+		
+		.content
+	{
+		padding-left:400px;
+		padding-top:20px;
+		background-color:white;
+	        text-align: center;
+		}
+			
+		.form{
+			border: 5px solid red;
+
+                      background-color:#d9d9d9;
+			
+			width:30%;
+			height:auto;
+			padding:20px 80px;
+			text-align:left;
+			}
+   
+
+
+		input[type=text],input[type=email],input[type=password],input[type=date]
+	{
+	
+		display:block;
+		padding:9px 20px;
+		width:100%;
+		box-sizing:border-box;
+		font:bold 15px Sansation;
+		border-radius:3px;
+		border:none;
+		 margin: 8px 0;
+		 transition:1s;
+		 border-left:3px solid orange;
+		 
+	
+	}
+	input[type=submit]
+	{
+	
+	
+		display:block;
+		padding:9px 20px;
+		width:100%;
+		box-sizing:border-box;
+		font:bold 15px Sansation;
+		border-radius:3px;
+		border:none;
+		 margin: 8px 0;
+		 transition:1s;
+	
+	
+	}
+	
+		
+		input[type=submit]
+		{
+			background-color:#009900;
+			color:white;
+			}
+			
+			select:focus,input[type=email]:focus,input[type=password]:focus, input[type=text]:focus
+			{
+				outline:none;
+				}
+				
+				input[type=submit]:hover
+				{
+					background-color:#006600;
+					outline:none;
+	 		}
+table, tr, th {
+    border: 1px solid black;
+	
+}
+
+#img1{
+
+margin-left:100px;
+
+
+}	
+.rowcol2 select{
+			float:right;
+			width:30%;
+			
+			}
+		.rowcol2
+		{
+			margin-top:-15px;
+			}
+			
+			.row{
+			margin-top:15px;
+			padding:4px;
+			}
+.rowcol3
+{
+	float:left:
+	width:50%;
+}
+.rowcol5
+{
+	float:right:
+	width:50%;
+}
+			
+</style>
+</head>
+<body>
+	<div class="content">
+	<div class="form">
+		<form method="post" action="home.html">
+		<div class="row">
+				<img src="pet1.jpg" width="80px" height="80px" id="img1" alt="lathuhtml" />
+				
+		</div>
+
+		<div class="row">
+			<div class="rowcol1">
+				<label id="lb1">Email or Phone Number</label><br>
+			</div>
+			<div class="rowcol2">
+			<select>
+			<option>User</option>
+			<option>Admin</option>
+			</select>
+			
+			</div>
+		</div>	
+		<div class="row">
+				<input type="text" name="emailorpno" required>
+		</div>
+		<div class="row">
+				<label>Password</lable><br>
+			<br>
+				<input type="password" name="password" required></br>
+				
+				<br>
+		</div>
+		<div class="row">
+				<input type="submit" value="Login"></br>
+			<br>
+		</div>	
+		<div class="row">
+			<div class="rowcol3">
+				<hr/>
+			</div>
+			<div class="rowcol4">
+				<p style="text-align:center;">what new?</p>
+			</div>
+			<div class="rowcol5">
+				<hr/>
+			</div>
+		</div>
+				<input type="submit" value="Sign Up with Google Account"></br>
+				<br>
+		
+	
+		
+		</div>
+	</form>	
+</div>
+</body>
+</html>
+

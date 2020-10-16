@@ -1,0 +1,854 @@
+
+<?php
+session_start();
+$showdetail=false;
+
+if(!isset($_SESSION['logemail']))
+{
+	$showdetail=true;
+	
+}
+
+	
+
+
+
+
+
+?>
+<!DOCTYPE html>
+<?include('try.php');?>
+<html lang="en">
+	<head>
+		<meta charset="utp-8">
+		
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<style><?php include 'CSS/home1.css'; ?></style>
+		<link rel="stylesheet" href="css/home1.css" type="text/css" >
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<title>Homepage</title>
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script type="text/javascript" src="javascript/home.js"></script>
+		
+		 
+		  <script  src="javascript/ajiindex.js"></script>
+
+		
+		
+		
+		
+		
+	
+	<!-- Required CSS -->
+	<link href="css1/movingboxes.css" rel="stylesheet">
+	<!--[if lt IE 9]>
+	<link href="css/movingboxes-ie.css" rel="stylesheet" media="screen">
+	<![endif]-->
+
+	<!-- Required script -->
+	<script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
+	<script src="js/jquery.movingboxes.js"></script>
+
+	<!-- Demo only -->
+	<link href="demo/demo.css" rel="stylesheet">
+	<script src="demo/demo.js"></script>
+	<style>
+		/* Overall & panel width defined using css in MovingBoxes version 2.2.2+ */
+		
+
+		#slider-two { width:100%; }
+		#slider-two > div { width:260px; }
+		
+		@media  screen and (max-width:800px)
+		{
+			body{
+				
+				}
+				#slider-two
+				{
+				width:100%;
+				}
+		
+		}
+	</style>
+
+
+   
+		
+		
+
+	</head>
+	
+	
+	<body onResize="refresh()">
+	
+		<div class="header">
+		
+		<h2 id="hed1">
+		
+		<div class="row">
+				<div class="headercolumn ">
+				<img src="images\coollogo_com-10202291.png" style="width:190px; height:150px; float:left;">
+				</div>
+				<div class="headercolumn" style="height:10px;">
+				  
+				<p id="petname">search</p>
+				</div>
+				
+				<div class="headercolumn" style="width:23%">
+					<button type="submit" id="mybutton"><i class="fa fa-search"></i></button>
+					 <input type="text" name="search" placeholder="Text here.....">
+				</div>
+				
+				<div class="headercolumn" style="width:15%; margin-top:6px;">
+					<div class="addtocart1">
+						<a href="payment.php" class="cart" style=" width:50px; height:45px; margin-top:67px;">
+						
+						<img src="images\img_260077.png" style="float:right; width:30px; height:30px; margin-top:67px;">
+						<span></span></a>
+
+  
+					</div>
+				
+				</div>
+				
+				<div class="headercolumn" style="width:9%; margin-left:64px;">
+					
+						<?php
+				if(!$showdetail){
+					
+				
+					
+					?>	
+					<div class="profiledropdown">
+					  <button class="profiledropbtn"><i class="fa fa-address-card" style="font-size:44px;"></i></button>
+					  <div class="profiledropdown-content">
+						<a href="newprofile1.php">My profile</a>
+						<a href="newprofile.php">Edit profile</a>
+						<a href="logout.php">Logout</a>
+					  </div>
+					</div>
+
+				<?php }?>
+				
+				
+					
+				</div>
+				
+			</div>	
+		</div>
+		
+		<div class="linknav">
+				<div id="aji3d">
+					<a href="p3.php" style="background-color:red;">Home</a>
+					<a href="newclinic.php">Clinic</a>
+					<a href="newseller.php">Seller</a>
+					
+					<a href="newaboutus.php" style="float:right;">About us</a>
+				</div>
+				<div class="dropdown">
+				
+					<button class="dropbtn" onclick="myFunction()" style="float:right;"><i class="fa fa-bars"></i></button>
+					
+						<div id="myDropdown" class="dropdown-content">
+							<div class="mycolumn1">
+								<span><a href="p3videos.php">Videos</a></span>
+								<span><a href="#abot">History<span></a>
+								<a href="newcontactus.php">Contact</a>
+								<a href="#">Credit details</a>
+								
+								
+							</div>
+							<div class="mycolumn2">
+							
+								<div class="ajidivtot">
+									<div class="ajidiv1">
+													
+									</div>
+								
+									<div class="ajidiv2">
+								
+									
+													
+									</div>
+								
+								</div>
+							</div>
+								
+						</div>
+					
+				</div>
+				
+		
+		</div>
+		
+		
+		<div class="row"><!--main page start---->
+			<div class="leftside" onMouseOver="funhide_aji_content()"><!---div class leftside start-->
+			
+				
+				
+				<div class="styles1" style="background-color:transparent;">
+				
+					
+					<button class="abutblue"> <a href="lopage.php">Login</a></button>
+					<button class="abutgreen"><a href="registerpage.php">Register</a></button>
+				</div>
+				
+				<div class="styles2">
+				
+					
+					<div class="custom-select"  style="width:auto; " onMouseOver="funhide()" onMouseOut="funshow()" >
+						  
+						  
+						  
+						  <!-----drop down event-->
+											  
+											  <div class="dropdowns">
+					<button onclick="myFunctions()" class="dropbtns">Select Category</button>
+					  <div id="myDropdowns" class="dropdowns-content" onMouseOut="funshowajihide()">
+						<a href="BIRD.php.php">Birds</a>
+						<a href="Bird food.php">Bird Food</a>
+						<a href="bird House.php">Bird House</a>
+						<a href="CAT.php.php">Cats</a>
+						<a href="cat food.php">Cat Food</a>
+						<a href="cat shop-accesoreis.php">Cat Things</a>
+						<a href="cat House.php">Cat House</a>
+						<a href="doghtml.php">Dogs</a>
+						<a href="dog food.php">Dog Food</a>
+						<a href="Dog House.php">Dog House</a>
+						<a href="dog shop_accesoreis.php">Dog things</a>
+						<a href="FISH.php.php">Fish</a>
+						<a href="Fish food.php">Fish Food</a>
+						<a href="Fish Tank.php">Fish Tank</a>
+						<a href="Fish Decor Gravel Substrate">Fish Things</a>
+						<a href="reptiles.php">Reptiles</a>
+						<a href="small pet.php">Small Pet</a>
+					  </div>
+					</div>
+											  
+						  
+						  
+						  
+						  
+						  
+						  
+					</div>			
+									
+					
+				
+				</div>
+				
+				
+				
+			<!-------banner---->
+				
+				<div class="styles" id="ajileftsidehide">
+				
+					
+					<div class="contentimage">
+					<img src="images\Copy of Printable colorful wall art quote template - Made with PosterMyWall.jpg" style="width:100%;
+					height:430px; border:2px solid blue;">
+					</div>
+
+				</div>
+				
+				<div class="styles" id="ajileftsidehide1">
+				
+					
+					<div class="contentimage">
+					<img src="images\Copy of Healthcare Centre Flyer - Made with PosterMyWall.jpg" style="width:100%;
+					height:400px; border:2px solid blue;">
+					
+				
+					</div>
+
+				</div>
+				
+				
+			
+			
+			
+			</div><!--div class leftside finish---->
+			
+			<div class="middleside" id="funhidemiddle_aji_content"  onMouseOver="funhideoption()" ><!---div class middle side start---->
+				<!------ image slide show------>
+				<div class="styles">
+					
+					<div class="slideshow-container">
+
+						<div class="mySlides fade">
+						
+						  <img src="images\aj1.jpg" style="width:100%">
+						  <div class="text">Select Your Pet</div>
+						</div>
+
+						<div class="mySlides fade">
+						 
+						  <img src="images\aj3.jpg"style="width:100%">
+						  <div class="text">Live With Pet</div>
+						</div>
+
+						<div class="mySlides fade">
+						
+						  <img src="images\aj2.jpg" style="width:100%">
+						  <div class="text">Make your life Happier</div>
+						</div>
+						<div class="mySlides fade">
+						 
+						  <img src="images\aj4.jpg" style="width:100%">
+						  <div class="text">Just visit Our Page</div>
+						</div>
+						
+
+					</div>
+					<br>
+
+					<div style="text-align:center">
+					  <span class="dot"></span> 
+					  <span class="dot"></span> 
+					  <span class="dot"></span> 
+					  <span class="dot"></span> 
+					</div>
+	
+					
+
+				</div>	
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					<script>
+					var ajishow=0;
+					var slideIndex = 0;
+					var divindex=0;
+					showSlides();
+					</script>
+					
+					
+					
+					
+					
+					
+		
+				
+					
+				
+				
+				<div class="styles">
+					
+					
+					<div class="contentimage2" id="contentimages2">
+						
+						<div class="row">	
+						
+							<div class="wrapper">
+
+								<div id="slider-two">	
+										<div class="out" >
+											<div class="div3">
+											<a href="bird.php"><img src="images\913.jpg"   class="img1"></a>
+												
+												<div class="des">
+													<p  id="ajinew3">New Arrival </p>
+												</div>
+												
+												
+											</div>
+										</div>
+										<div class="out">
+											<div class="div3" >
+												<a href="small pet.php"><img src="images\Angora Rabbit.jpg"  class="img1"></a>
+												
+												<div class="des">
+													<p  id="ajinew2">New Arrival</p>
+												</div>
+												
+												
+											</div>
+										</div>
+										<div class="out">
+											<div class="div3" >
+												<a href="dog.php"><img src="images\Beagle dog.jpg"   class="img1"></a>
+												
+												<div class="des">
+													<p  id="ajinew1">New Arrival</p>
+												</div>
+												
+												
+											</div>
+										</div>
+									
+										<div class="out">
+											<div class="div3" >
+												<a href="small pet.php"><img src="images\fancy bear hamster.jpg"   class="img1"></a>
+												
+												<div class="des">
+													<p id="ajinew">New Arrival</p>
+													
+													
+												</div>
+											</div>
+										</div>
+										
+										<div class="out">
+											<div class="div3" >
+												<a href="small pet.php"><img src="images\roborovski dwart hamster.png"   class="img1"></a>
+												
+												<div class="des">
+													<p id="ajinew">New Arrival</p>
+													
+													
+												</div>
+											</div>
+										</div>
+										
+										<div class="out">
+											<div class="div3" >
+												<a href="dog.php"><img src="images\3.jpg"   class="img1"></a>
+												
+												<div class="des">
+													<p id="ajinew">New Arrival</p>
+													
+													
+												</div>
+											</div>
+										</div>
+										
+										<div class="out">
+											<div class="div3" >
+												<a href="bird.php"><img src="images\g4.jpg"   class="img1"></a>
+												
+												<div class="des">
+													<p id="ajinew">New Arrival</p>
+													
+													
+												</div>
+											</div>
+										</div>
+										
+										<div class="out">
+											<div class="div3" >
+												<a href="dog.php"><img src="images\789.png"  class="img1"></a>
+												
+												<div class="des">
+													<p id="ajinew">New Arrival</p>
+													
+													
+												</div>
+											</div>
+										</div>
+										
+										<div class="out">
+											<div class="div3" >
+												<a href="bird.php"><img src="images\g5.jpg"   class="img1"></a>
+												
+												<div class="des">
+													<p id="ajinew">New Arrival</p>
+													
+													
+												</div>
+											</div>
+										</div>
+										
+										<div class="out">
+											<div class="div3" >
+												<a href="small pet.php"><img src="images\winter white hamster.jpg"   class="img1"></a>
+												
+												<div class="des">
+													<p id="ajinew">New Arrival</p>
+													
+													
+												</div>
+											</div>
+										</div>
+										
+										<div class="out">
+											<div class="div3" >
+												<a href="fish.php"><img src="images\e04.jpg"   class="img1"></a>
+												
+												<div class="des">
+													<p id="ajinew">New Arrival</p>
+													
+													
+												</div>
+											</div>
+										</div>
+										
+										<div class="out">
+											<div class="div3" >
+												<a href="small pet.php"><img src="images\Angora Rabbit.jpg"   class="img1"></a>
+												
+												<div class="des">
+													<p id="ajinew">New Arrival</p>
+													
+													
+												</div>
+											</div>
+										</div>
+										
+										<div class="out">
+											<div class="div3" >
+												<a href="dog.php"><img src="images\Akita_Inu.jpg"   class="img1"></a>
+												
+												<div class="des">
+													<p id="ajinew">New Arrival</p>
+													
+													
+												</div>
+											</div>
+										</div>
+									
+								</div>
+							</div>	
+						</div>
+					</div>
+						
+				</div>
+				<div class="styles">
+					
+						
+						<div class="contentimage1" >
+							<div class="outs" onMouseOver="typeWriter()" onMouseOut="typeOut()" >
+								<div class="div4" >
+									<img src="images\Marshall Premium Ferret Food.jpg"   class="img2">
+									<div class="div4desc1"   >
+										
+									
+										
+										
+												<?php
+				if(!$showdetail) { ?>
+					
+										<button type="button"> <a href="small pet.php">To Shop</a></button>
+				<?php }?>
+										
+												<?php
+				if( $showdetail ) { ?>
+					
+										<button type="button"> <a href="lopage.php">To Shop</a></button>
+				<?php }?>
+
+
+										
+									</div>
+									<div class="desc">
+										<p id="ajinew">5% Discount</p>
+										
+										
+									</div>
+								</div>
+							</div>
+							
+							<div class="outs" onMouseOver="typeWriter1()" onMouseOut="typeOut1()">
+								<div class="div4">
+									<img src="images\mid west iCrate Dog crate.png"   class="img2">
+									<div class="div4desc">
+										
+									<?php if(!$showdetail) {?>
+										<button type="button"><a href="dog House.php"> To Shop</a></button>
+										
+									<?php }?>
+									
+									<?php if($showdetail) {?>
+										<button type="button"> <a href="lopage.php">To Shop</a></button>
+									
+									<?php }?>
+									</div>
+									<div class="desc">
+										<p id="ajinew">5% Discount</p>
+										
+										
+									</div>
+								</div>
+							</div>
+							
+							<div class="outs" onMouseOver="typeWriter2()" onMouseOut="typeOut2()">
+								<div class="div4">
+									<img src="images\1004.jpg"   class="img2">
+									<div class="div4desc1">
+										
+									<?php if(!$showdetail) {?>
+									
+										<button type="button"> <a href="Fish Tank.php">To Shop</a></button>
+									<?php }?>
+									
+									<?php if($showdetail) { ?>
+										<button type="button"> <a href="lopage.php">To Shop</a></button>
+									<?php }?>
+									
+									</div>
+									<div class="desc">
+										<p id="ajinew">7% Discount</p>
+										
+										
+									</div>
+								</div>
+							</div>
+							
+							<div class="outs" onMouseOver="typeWriter3()" onMouseOut="typeOut3()">
+								<div class="div4" >
+									<img src="images\008.jpg"   class="img2">
+									<div class="div4desc">
+										
+									<?php if(!$showdetail) { ?>
+										<button type="button"><a href="Fish Tank.php"> To Shop</a></button>
+									<?php }?>
+									<?php if($showdetail) { ?>
+									
+										<button type="button"> <a href="lopage.php">To Shop</a></button>
+									<?php }?>
+									
+									</div>
+									<div class="desc">
+										<p id="ajinew">8% Discount</p>
+										
+										
+									</div>
+								</div>
+							</div>
+							<div class="outs" onMouseOver="typeWriter3()" onMouseOut="typeOut3()">
+								<div class="div4" >
+									<img src="images\Armarkat Little House pet bed.jpg"  class="img2">
+									<div class="div4desc">
+										
+									<?php if(!$showdetail) {?>
+										<button type="button"><a href="Cat House.php"> To Shop</a></button>
+									<?php } ?>
+									
+									<?php if($showdetail) {?>
+										<button type="button"> <a href="lopage.php">To Shop</a></button>
+									<?php }?>
+									</div>
+									<div class="desc">
+										<p id="ajinew">3% Discount</p>
+										
+										
+									</div>
+								</div>
+							</div>
+							<div class="outs" onMouseOver="typeWriter3()" onMouseOut="typeOut3()">
+								<div class="div4" >
+									<img src="images\Blue's Stew Adult Dog Food.jpg"   class="img2">
+									<div class="div4desc">
+										
+									<?php if(!$showdetail) {?>
+										<button type="button"><a href="dog food.php"> To Shop</a></button>
+									<?php } ?>
+									<?php if($showdetail) {?>
+										<button type="button"><a href="lopage.php"> To Shop</a></button>
+									<?php } ?>
+									
+									</div>
+									<div class="desc">
+										<p id="ajinew">8% Discount</p>
+										
+										
+									</div>
+								</div>
+							</div>
+							
+							<div class="outs" onMouseOver="typeWriter4()" onMouseOut="typeOut4()">
+								<div class="div4" >
+									<a href="Dog House.php"><img src="images\88.jpg"   class="img2"></a>
+									<div class="div4desc1">
+										
+									<?php if(!$showdetail) {?>
+										<button type="button"><a href="cat shop-accesoreis.php">To Shop</a></button>
+										<?php } ?>
+									<?php if($showdetail) {?>
+										<button type="button"><a href="lopage.php"> To Shop</a></button>
+									<?php } ?>
+									</div>
+									<div class="desc">
+										<p id="ajinew">5% Discount</p>
+										
+										
+									</div>
+								</div>
+							</div>
+							
+							<div class="outs" onMouseOver="typeWriter5()" onMouseOut="typeOut5()">
+								<div class="div4" >
+									<img src="images\Tetrafauna Reptomin Aquatic Turtle, Newt and Frog Floating Food Sticks.jpg"   class="img2">
+									<div class="div4desc">
+										
+										<?php if(!$showdetail) {?>
+											<button type="button"><a href="reptiles.php"> To Shop</a></button>
+											<?php } ?>
+									<?php if($showdetail) {?>
+										<button type="button"><a href="lopage.php"> To Shop</a></button>
+									<?php } ?>
+									</div>
+									<div class="desc">
+										<p id="ajinew">8% Discount</p>
+										
+										
+									</div>
+								</div>
+							</div>
+							<div class="outs" onMouseOver="typeWriter5()" onMouseOut="typeOut5()">
+								<div class="div4" >
+									<img src="images\Cat Treats.jpg"   class="img2">
+									<div class="div4desc">
+										
+									<?php if(!$showdetail) {?>
+										<button type="button"> <a href="cat food.php"> To Shop</a></button>
+											<?php } ?>
+									<?php if($showdetail) {?>
+										<button type="button"><a href="lopage.php"> To Shop</a></button>
+									<?php } ?>
+									</div>
+									<div class="desc">
+										<p id="ajinew">5% Discount</p>
+										
+										
+									</div>
+								</div>
+							</div>
+							<div class="outs" onMouseOver="typeWriter5()" onMouseOut="typeOut5()">
+								<div class="div4" >
+									<img src="images\Hill's Prescription Diet kidney Care Cat food.jpg"  class="img2">
+									<div class="div4desc">
+										
+									<?php if(!$showdetail) {?>
+										<button type="button"><a href="cat food.php"> To Shop</a></button>
+											<?php } ?>
+									<?php if($showdetail) {?>
+										<button type="button"><a href="lopage.php"> To Shop</a></button>
+									<?php } ?>
+									</div>
+									<div class="desc">
+										<p id="ajinew">5% Discount</p>
+										
+										
+									</div>
+								</div>
+							</div>
+							
+							
+				</div>
+				
+			</div>
+				<div class="styles">
+					<p id="timeend"> Discount Ends In</p>
+					<p id="demo"></p>
+				</div>
+				<div class="contentimage1" id="ajiviewimages" >
+				
+				
+				
+				</div>
+				
+				
+				
+			</div><!----div class middle side finish---->
+			
+			<div class="rightside"><!---div class right side start--->
+			
+				<div class="styles">
+				
+				
+					<div class="contentimage">
+					<img src="images\Copy of Hiring Poster - Made with PosterMyWall.jpg" style="width:100%;
+					height:430px;  border:2px solid blue;">
+					
+					</div>
+				</div>
+				<div class="styles">
+				
+					
+					<div class="contentimage">
+						<img src="images\Copy of Big Sale Flyer - Made with PosterMyWall.jpg" style="width:100%;
+					height:430px; height:430px; border:2px solid blue;">
+					
+					</div>
+				</div>
+				<div class="styles">
+						<object width="100%" height="20%"  data="https://www.youtube.com/embed/tgbNymZ7vqY">
+						</object>
+					
+				</div>
+					
+					
+			</div><!--div class right side finish-->
+			
+		</div>
+		
+		
+		
+		<div class="footer1">
+		<button onclick="topFunction()" id="myfooter1Btn" title="Go to top">TOP OF PAGE</button>
+		</div>
+		
+		<div class="footer2">
+		
+			<img src="images\Capture3.PNG">
+			<img src="images\Capture5.PNG">
+			<button type="button" ><a href="feedback.php"> Feedback</a></button>
+	
+
+									
+				
+		
+		</div>
+		
+		<div class="footer3">
+		
+			<div class="responsemedia1">
+			
+			
+				<a href="#" class="fa fa-facebook"  ></a>
+				<a href="#" class="fa fa-twitter"  ></a>
+				
+				<a href="#" class="fa fa-instagram"></a>
+				<a href="#" class="fa fa-google" ></a>
+				<a href="#" class="fa fa-youtube" ></a>
+				
+			</div>
+			
+			<div class="icon-bar">
+			
+			
+			  <a href="#" class="fa fa-facebook"  ></a>
+				<a href="#" class="fa fa-twitter"  ></a>
+				
+				<a href="#" class="fa fa-instagram"></a>
+				<a href="#" class="fa fa-google" ></a>
+				<a href="#" class="fa fa-youtube" ></a>
+				
+			
+			
+			
+			
+			</div>
+			
+			<h2 id="contact">Contact us</h2>
+			<div class="ajrow">
+				<div class="ajcolumn1">
+					<p>Email id-</p>
+					<p>Mypet@gmail.com</p>
+					
+				</div>
+				<div class="ajcolumn2">
+				<p>Hot-line-Number:</p>
+					<p>+94776898745</p>
+					
+				</div>
+			</div>
+			
+		</div>	
+	
+	</body>
+	
+	</html>
