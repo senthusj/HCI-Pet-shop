@@ -379,23 +379,10 @@ if(isset($_POST['btnsubmit1']))
 											  <div class="dropdowns">
 					<button onclick="myFunctions()" class="dropbtns">Select Category</button>
 					  <div id="myDropdowns" class="dropdowns-content" onMouseOut="funshowajihide()">
-						<a href="bird.php">Birds</a>
-						<a href="Bird food.php">Bird Food</a>
-						<a href="bird House.php">Bird House</a>
 						<a href="CAT.php">Cats</a>
-						<a href="cat food.php">Cat Food</a>
-						<a href="cat shop-accesoreis.php">Cat Things</a>
-						<a href="cat House.php">Cat House</a>
 						<a href="doghtml.php">Dogs</a>
-						<a href="dog food.php">Dog Food</a>
-						<a href="Dog House.php">Dog House</a>
-						<a href="dog shop_accesoreis.php">Dog things</a>
 						<a href="FISH.html.php">Fish</a>
 						<a href="Fish food.php">Fish Food</a>
-						<a href="Fish Tank.php">Fish Tank</a>
-						<a href="Fish Décor Gravel Substrate.php">Fish Things</a>
-						<a href="reptiles.php">Reptiles</a>
-						<a href="small pet.php">Small Pet</a>
 					  </div>
 					</div>
 											  

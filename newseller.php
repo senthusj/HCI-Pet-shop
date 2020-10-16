@@ -197,10 +197,16 @@ $sqlinsert="SELECT count(no_id) from addnotification WHERE customer_id='$myid'";
 					<button class="dropbtn" onclick="myFunction()" style="float:right;"><i class="fa fa-bars"></i></button>
 					
 						<div id="myDropdown" class="dropdown-content">
+							<div class="mycolumn1">
 								<span><a href="p3videos.php">Videos</a></span>
 								<span><a href="#abot">History<span></a>
 								<a href="#">Contact</a>
-																
+								<a href="#">Credit details</a>
+								
+								
+							</div>
+							<div class="mycolumn2">
+							
 								<div class="ajidivtot">
 									<div class="ajidiv1">
 													
@@ -208,10 +214,12 @@ $sqlinsert="SELECT count(no_id) from addnotification WHERE customer_id='$myid'";
 								
 									<div class="ajidiv2">
 								
+									
 													
 									</div>
 								
 								</div>
+							</div>
 								
 						</div>
 					

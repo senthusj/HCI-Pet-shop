@@ -322,7 +322,7 @@ $sqlinsert="SELECT count(no_id) from addnotification WHERE customer_id='$myid'";
 					
 			<div class="sstotal">
 
-<a href="aa.php" class="ss1button">Feedback</a>
+<a href="feedback.php" class="ss1button">Feedback</a>
 	<div class="ssscroll">
 		<div class="ssrow">
 			<div class="sscontainer">
@@ -344,7 +344,7 @@ $sqlinsert="SELECT count(no_id) from addnotification WHERE customer_id='$myid'";
 							
 							
 								<div class="ssdoctor">
-										<p>Dr. Chrdory<br>Akshi Pet Clinic<br>&#9742;  +(94)-779784215</p>
+										<p>Dr. Chrdory</p>
 								</div>
 								
 
@@ -376,7 +376,7 @@ $sqlinsert="SELECT count(no_id) from addnotification WHERE customer_id='$myid'";
 							
 							
 								<div class="ssdoctor">
-										<p>Dr. Nasrudin Shaikh<br>Pathan Clinic<br>&#9742;  +(94)-771758967</p>
+										<p>Dr. Nasrudin Shaikh</p>
 								</div>
 
 										
@@ -405,7 +405,7 @@ $sqlinsert="SELECT count(no_id) from addnotification WHERE customer_id='$myid'";
 							
 							
 								<div class="ssdoctor">
-										<p>Dr.Chandimaa Perera<br>Ayshu Pet World<br>&#9742;  +(94)-771478523</p>
+										<p>Dr.Chandimaa Perera</p>
 								</div>
 
 										
@@ -435,7 +435,7 @@ $sqlinsert="SELECT count(no_id) from addnotification WHERE customer_id='$myid'";
 							
 							
 								<div class="ssdoctor">
-										<p>Dr. Destini R. Holloway<br>Ruberd Pet World<br>&#9742;  +(94)-773698521</p>
+										<p>Dr. Destini R. Holloway</p>
 								</div>
 
 										
@@ -467,7 +467,7 @@ $sqlinsert="SELECT count(no_id) from addnotification WHERE customer_id='$myid'";
 							
 							
 								<div class="ssdoctor">
-										<p>Dr. David Elbeze<br>Shree Dog Care Unit<br>&#9742;  +(94)-778521364</p>
+										<p>Dr. David Elbeze</p>
 										<p></p>
 								</div>
 								
@@ -498,7 +498,7 @@ $sqlinsert="SELECT count(no_id) from addnotification WHERE customer_id='$myid'";
 							
 							
 								<div class="ssdoctor">
-										<p>Dr. Geetha Nilesh<br>Badsha Pet Center<br>&#9742;  +(94)-771234567</p>
+										<p>Dr. Geetha Nilesh</p>
 								</div>
 
 										
@@ -525,7 +525,7 @@ $sqlinsert="SELECT count(no_id) from addnotification WHERE customer_id='$myid'";
 							
 							
 								<div class="ssdoctor">
-										<p>Dr. Sarah ,BSC (HONS)<br>Veteniary Pet Clinic<br>&#9742;  +(94)-774867521</p>
+										<p>Dr. Sarah ,BSC (HONS)</p>
 								</div>
 
 										
@@ -554,7 +554,7 @@ $sqlinsert="SELECT count(no_id) from addnotification WHERE customer_id='$myid'";
 							
 							
 								<div class="ssdoctor">
-										<p>Dr. Massimo Orioles<br>Pet Care Center<br>&#9742;  +(94)-770189634</p>										
+										<p>Dr. Massimo Orioles<br></p>										
 								</div>
 
 										
@@ -584,7 +584,7 @@ $sqlinsert="SELECT count(no_id) from addnotification WHERE customer_id='$myid'";
 							
 							
 								<div class="ssdoctor">
-										<p>Dr. Jennifer Summerfiel<br>Prabhat Vaternary<br>&#9742;  +(94)-771120741</p>
+										<p>Dr. Jennifer Summerfiel</p>
 								</div>
 
 										
@@ -612,7 +612,7 @@ $sqlinsert="SELECT count(no_id) from addnotification WHERE customer_id='$myid'";
 							
 							
 								<div class="ssdoctor">
-										<p>Dr. Somnath Dhainje<br>Do Do Pet Clinic<br>&#9742;  +(94)-777400167</p>
+										<p>Dr. Somnath Dhainje</p>
 								</div>
 
 										
@@ -687,24 +687,24 @@ $sqlinsert="SELECT count(no_id) from addnotification WHERE customer_id='$myid'";
 			<div class="responsemedia1">
 			
 			
-				<a href="#" class="fa fa-facebook"  ></a>
-				<a href="#" class="fa fa-twitter"  ></a>
+				<a href="www.facebook.com" class="fa fa-facebook"  ></a>
+				<a href="www.twitter.com" class="fa fa-twitter"  ></a>
 				
-				<a href="#" class="fa fa-instagram"></a>
-				<a href="#" class="fa fa-google" ></a>
-				<a href="#" class="fa fa-youtube" ></a>
+				<a href="www.instagram.com" class="fa fa-instagram"></a>
+				<a href="www.google.com" class="fa fa-google" ></a>
+				<a href="www.youtube.com" class="fa fa-youtube" ></a>
 				
 			</div>
 			
 			<div class="icon-bar">
 			
 			
-			  <a href="#" class="fa fa-facebook"  ></a>
-				<a href="#" class="fa fa-twitter"  ></a>
+			  <a href="www.facebook.com" class="fa fa-facebook"  ></a>
+				<a href="www.twitter.com" class="fa fa-twitter"  ></a>
 				
-				<a href="#" class="fa fa-instagram"></a>
-				<a href="#" class="fa fa-google" ></a>
-				<a href="#" class="fa fa-youtube" ></a>
+				<a href="www.instagram.com" class="fa fa-instagram"></a>
+				<a href="www.google.com" class="fa fa-google" ></a>
+				<a href="www.youtube.com" class="fa fa-youtube" ></a>
 				
 			
 			

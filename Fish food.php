@@ -485,7 +485,7 @@ if(mysqli_num_rows($result)>0)
 		
 		?>
 		 <div class="anucolumn">
-		<div class="anucontent" style="width:500px; height:500px;">
+		<div class="anucontent" style="width:225; height:500px;">
 		
 		<form method="POST" action="Fish food.php?action=add&id=<?php echo $row['item_id']; ?>" >
 		<?php echo "<img  style='width:200px; height:200px;' src='images/".$row['image']."'>" ?>
